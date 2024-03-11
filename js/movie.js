@@ -11,9 +11,6 @@ fetch("/s.json").then(g => g.json()).then(g =>{
     anchor.href = "/play/"+x.imdb
     anchor.appendChild(img)
     div.appendChild(anchor)
-    div.onclick = () =>         location.href = "#load"
-    document.getElementsByClassName("float-container")[0].appendChild(div)
-    })
 })
 
 }
