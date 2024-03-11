@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/watch.css">
+    <title>{title} {id}</title>
+    <meta property="og:title" content="stream fr" />
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://streamfr.onrender.com/play/{id}" />
+    <meta property="og:description" content="{desc}" />
+    <meta property="og:image" content="{img}" />
+</head>
+<body>
+    <ul>
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+            |
+        </li>
+        <li>
+        <a href="https://discord.gg/bqXhREHEDt">Discord</a>
+        </li>
+        <li>|</li>
+        <li>
+        <a href="https://github.com/bhaiaajo">Github</a>
+        </li>
+        </ul>
+    <a href="https://discord.gg/bqXhREHEDt">Discord</a>
+    <center>
+        <div class="search">
+            <input type="text" placeholder="Search" id="textbox">
+            <button id="submit">🔍</button>
+        </div>
+    </center>
+    <iframe src="{url}" frameborder="0" allowfullscreen></iframe>
+    <div class="info">
+        <img src="{imgurl}" alt="{title}-img"style="float: left; margin-right: 20px;" height="400" width="250">
+        <p>{msg}</p>
+    </div>
+</body>
+</html>
