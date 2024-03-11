@@ -14,4 +14,4 @@ fetch("/s.json").then(g => g.json()).then(g =>{
     document.getElementsByClassName("float-container")[0].appendChild(div)
 })
 
-}
+})
