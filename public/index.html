@@ -5,7 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stream fr</title>
     <link rel="stylesheet" href="/css/index.css">
-    <script src="js/index.js"></script>
+    <script>
+        window.onload = () =>{
+    document.getElementById("submit").onclick = () =>{
+
+        if(!document.getElementById("textbox").value) return alert("Please enter a search term")
+        location.href = "/search?q=" + document.getElementById("textbox").value
+
+    }
+
+    document.addEventListener("keypress", (e) =>{
+        if(e.keyCode === 13){
+            const searchTerm = document.getElementById("textbox").value
+    
+            if(!searchTerm) return alert("Please enter a search term")
+    
+            window.open("/search?q="+ searchTerm)
+            document.getElementById("textbox").value = ""
+        }
+    })
+}
+    </script>
     <script src="/js/movie.js"></script>
     <meta property="og:title" content="stream fr" />
     <meta property="og:type" content="website"/>
