@@ -1,4 +1,4 @@
-window.onload = () => {
+window.onload = () =>{
     document.getElementById("submit").onclick = () =>{
 
         if(!document.getElementById("textbox").value) return alert("Please enter a search term")
@@ -16,4 +16,5 @@ window.onload = () => {
             document.getElementById("textbox").value = ""
         }
     })
+}
 }
