@@ -112,7 +112,7 @@ app.get("/play/:id", async(req,res) =>{
     const stream = await streamfetch(fa.id, fa.contentType)
     const d = fs.readFileSync("./public/watch.html", "utf-8")
     const msg = `${fa.rating.star}⭐ ${fa.contentRating} ${fa.runtime} ${fa.title} ${fa.releaseDetailed.year}<br>${fa.genre.map(x => x).join(", ")}<br><br>${fa.plot}`
-    const fi = d.replace(/{url}/g, stream).replace(/{imgurl}/g, fa.image).replace(/{title}/g, fa.title).replace(/{id}/g , fa.id).replace(/{msg}/g, msg).replace(/{desc}/g, fa.plot)
+    const fi = d.replace(/{url}/g, stream).replace(/{imgurl}/g, fa.image).replace(/{title}/g, fa.title).replace(/{id}/g , fa.id).replace(/{msg}/g, msg).replace(/{desc}/g, fa.plot).replace(/{img}/g, fa.image)
     res.setHeader("Content-Type", 'text/html')
     res.send(fi)
 
