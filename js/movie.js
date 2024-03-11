@@ -15,4 +15,4 @@ fetch("/s.json").then(g => g.json()).then(g =>{
 })
 
 })
-})
+}
