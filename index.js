@@ -82,7 +82,7 @@ app.get("/search", async(req,res) =>{
 
     if(!req.query.q) return res.sendStatus(400)
 
-    const g = (await(await fetch("http://localhost:8080/api/search?q=" + req.query.q)).json())
+    const g = (await(await fetch("https://streamfr.onrender.com/api/search?q=" + req.query.q)).json())
     let code = ""
 
     g.forEach(x => {
