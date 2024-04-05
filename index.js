@@ -56,8 +56,10 @@ app.get("/api/search",async (req, res) =>{
 
         for (const g of got?.results) {
             const  url  = await streamfetch(g.id, g.stream)
+            if(url){
             g.url = url
             arr.push(g);
+            }
         }
 
        res.send(arr)
