@@ -55,7 +55,7 @@ app.get("/api/search",async (req, res) =>{
     if(!got?.results) return res.send({"error": "No results found"});
 
         for (const g of got?.results) {
-            const  url  = await streamfetch(g.id, g.stream)
+            const  url  = await streamfetch(g.id, g.type)
             if(url){
             g.url = url
             arr.push(g);
