@@ -3,85 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>stream fr</title>
     <link rel="stylesheet" href="/css/index.css">
-    <script type='text/javascript' src='//pl22991898.highcpmgate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
-    <script async="async" data-cfasync="false" src="//pl23008515.highcpmgate.com/991e573b2bbe85d6a56d90d2ab7e8191/invoke.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
+    <title>stream fr</title>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-2GSJRJYKS0');
-    </script>
-    <script>
-        window.onload = () =>{
-    document.getElementById("submit").onclick = () =>{
-
-        if(!document.getElementById("textbox").value) return alert("Please enter a search term")
-        location.href = "/search?q=" + document.getElementById("textbox").value
-
-    }
-
-    document.addEventListener("keypress", (e) =>{
-        if(e.keyCode === 13){
-            const searchTerm = document.getElementById("textbox").value
-    
-            if(!searchTerm) return alert("Please enter a search term")
-    
-            window.open("/search?q="+ searchTerm)
-            document.getElementById("textbox").value = ""
+        window.onload = ()=>{
+        let cw = localStorage.getItem("continue")
+        if(!cw){
+            localStorage.setItem("continue", "[]")
+            window.location.reload()
         }
-    })
-            fetch("/s.json").then(g => g.json()).then(g =>{
+        try {
+            cw = JSON.parse(cw).reverse() || []
+        }catch{
+            console.log(JSON.parse(cw))
+        }
+         cw = cw.filter((value, index, self) =>
+  index === self.findIndex((t) => (
+    t.place === value.place && t.name === value.name
+  ))
+)
+        document.getElementById("submit").onclick = () =>{
+    
+    if(!document.getElementById("search").value) return alert("Please enter a search term")
+    window.location.href = "/search?q=" + document.getElementById("search").value
 
-    g.forEach(x =>{
-    const div = document.createElement("div") 
-    div.className = "float-child"
-    const img = document.createElement("img")
-    img.src = x.img
-    const anchor = document.createElement("a")
-    anchor.href = "/play/"+x.imdb
-    anchor.appendChild(img)
-    div.appendChild(anchor)
-    document.getElementsByClassName("float-container")[0].appendChild(div)
-})
-
-})
 }
+
+document.addEventListener("keypress", (e) =>{
+    if(e.keyCode === 13){
+        const searchTerm = document.getElementById("search").value
+
+        if(!searchTerm) return alert("Please enter a search term")
+
+        window.open("/search?q="+ searchTerm)
+        document.getElementById("textbox").value = ""
+        window.location.href = "/search?q=" + document.getElementById("search").value
+    }
+})
+        if(cw && cw.length !== 0){
+            fetch(`/api/similar/${cw[0].id}/${cw[0].type}`).then(g =>g.json()).then(y =>{
+            document.getElementById("buwdiv").style.display = "block"
+            const addDiv = document.getElementById("buwimages")
+            const buwText = document.getElementById("buw")
+            buwText.innerText = `Because you watched ${cw[0].name}`
+            y.results.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+        })
+            const x = document.getElementById("continue")
+            x.style.display = "block"
+            const addDiv = document.getElementById("continueimages")
+            cw.forEach((x) =>{
+                const img = document.createElement("img")
+                img.src = x.src
+                const anchor = document.createElement("a")
+                anchor.href = x.href
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+        }
+
+
+        fetch("/api/discover").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("discoverimages")
+            data.results.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+        fetch("/api/toprated").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("trimages")
+            data.results.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+        //7062993 Horror Movies Horror Movies by arf2k
+        fetch("/api/list/7062993").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("7062993images")
+            data.items.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+        //3945 Sci Fi List by WardenclyffeTower
+        fetch("/api/list/3945").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("3945images")
+            data.items.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+    }   
     </script>
-    <meta property="og:title" content="stream fr" />
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://streamfr.onrender.com/" />
-    <meta property="og:description" content="Watch Movies and Shows Free on streamfr" />
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-2GSJRJYKS0');
+        </script>
+        <script type='text/javascript' src='https://pl22991898.cpmrevenuegate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
 </head>
-<body>
-    <ul>
-    <li>
-        <a href="/">Home</a>
-    </li>
-    <li>
-        |
-    </li>
-    <li>
-    <a href="https://discord.gg/bqXhREHEDt">Discord</a>
-    </li>
-    <li>|</li>
-    <li>
-    <a href="https://github.com/bhaiaajo">Github</a>
-    </li>
-    </ul>
-    <center>
+<body>  
+    <div class="topnav">
+        <h1 style="color: white;float: left; font-size: 25px; margin-right: 15px; margin-left: 15px;">stream fr</h1>
+        <a class="active" href="/">Home</a>
+        <a href="https://github.com/bhaiaajo">Github</a>
+        <a href="https://discord.com/invite/bqXhREHEDt">Discord</a>
+      </div>
+      <center>
         <div class="search">
-            <input type="text" placeholder="Search" id="textbox">
-            <button id="submit">🔍</button>
+            <input type="text" placeholder="Search Movies/Shows" id="search" class="searchbar">
+            <button id="submit" class="submit">🔍</button>
         </div>
-        <div id="container-991e573b2bbe85d6a56d90d2ab7e8191"></div>
-        <h1 style="color:red;font-size:30px;">Please disable your adblocker(if you use adblocker) to support us, Thanks!</h1>
-        <div id="container-991e573b2bbe85d6a56d90d2ab7e8191"></div>
-    </center>
-    <div class="float-container">
+      </center>
+      <div class="continue" id="continue">
+        <h1 style="color: white;">Continue Watching</h1> <button onclick="localStorage.setItem('continue', '[]');window.location.reload()">Clear Continue Watching</button>
+        <div class="images" id="continueimages">
+    </div>
+    </div>
+    <div class="continue" id="buwdiv">
+        <h1 style="color: white;"id="buw"></h1>
+        <div class="images" id="buwimages">
+        </div>
+    </div>
+    <div class="movierecdiv">
+        <h1 style="color: white;">Discover Movies</h1>
+        <div class="images" id="discoverimages">
+        </div> 
+    </div>
+    <div class="movierecdiv">
+        <h1 style="color: white;">Top Rated Movies</h1>
+        <div class="images" id="trimages">
+        </div> 
+    </div>
+    <div class="movierecdiv">
+        <h1 style="color: white;">Sci Fi List by WardenclyffeTower</h1>
+        <div class="images" id="3945images">
+        </div> 
+    </div>
+    <div class="movierecdiv">
+        <h1 style="color: white;">Horror Movies By arf2k</h1>
+        <div class="images" id="7062993images">
+        </div> 
     </div>
 </body>
 </html>
