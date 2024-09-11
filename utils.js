@@ -3,7 +3,7 @@ const options = {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYTk5MjdhODNkMzNlNmNjZjJlMGE4MTkyZTg3NDQ2NiIsIm5iZiI6MTcyNjAzODg3NS45NDMwODUsInN1YiI6IjY2OTExZDBmNmNjNzlmOTE0MGQxNzYxNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.XECuIPauynSHCJqK6MhcyEFGrjqjq3X0DY3t3Sxw-dI'
+      Authorization: `Bearer ${process.env.tmdbKey}`
     }
   };
 
