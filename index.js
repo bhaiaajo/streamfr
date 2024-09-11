@@ -1,123 +1,108 @@
 const express = require("express")
-const fs = require("fs")
-const fetch = require("node-fetch")
 const app = express()
+const utils = require("./utils")
 
-function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
-  
-    // While there remain elements to shuffle.
-    while (currentIndex > 0) {
-  
-      // Pick a remaining element.
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-  
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-  
-    return array;
+function secondsToHms(d) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    return hDisplay + mDisplay + sDisplay; 
 }
 
-const s = require("./s.json")
-
-const imdb = require("./utils/imdb-api")
-const streamfetch = require("./utils/streamfetch")
-
-app.use("/css",express.static(__dirname + "/css"))
-app.use("/js",express.static(__dirname + "/js"))
-
+app.use("/css",express.static(__dirname+"/css"))
 app.use(express.json())
-
 app.get("/", (req,res) =>{
 
-    res.sendFile(__dirname + "/public/index.html")
+    res.sendFile(__dirname+"/public/index.html")
 
 })
 
-app.get("/s.json", (req,res) => {
-
-    res.send(shuffle(s))
-
-})
-
-app.get("/api/search",async (req, res) =>{
-
-
-    let arr = []
-
-    const q = req.query.q
-    if(!q) return res.send({'error': "No Query Found"});
-
-    const got = await imdb.search(q)
-    if(!got?.results) return res.send({"error": "No results found"});
-
-        for (const g of got?.results) {
-            const  url  = await streamfetch(g.id, g.type)
-            if(url){
-            g.url = url
-            arr.push(g);
-            }
-        }
-
-       res.send(arr)
-      
-
-})
-
-app.get("/api/title/:id", (req,res) =>{
-
-    const id = req.params.id
-    if(!id) return res.send({error: 'ImDB ID Missing'})
-    if(!id.toLowerCase().startsWith("tt")) return res.send({error: "ImDB ID not matching RegEx"})
-
-    imdb.title(id).then(x =>{
+app.get("/api/discover", (req,res) =>{
+    utils.discoverMovie().then(x =>{
         res.send(x)
     })
-
 })
-   
-app.get("/search", async(req,res) =>{
-    const data = fs.readFileSync("./public/search.html", "utf-8")
-
-    if(!req.query.q) return res.sendStatus(400)
-
-    const g = (await(await fetch("https://streamfr.onrender.com/api/search?q=" + req.query.q)).json())
-    let code = ""
-
-    g.forEach(x => {
-    code += `<div class="float-child">
-            <a href="/play/${x.id}"> 
-                <img src="${x.image_large}" alt="${x.title}-img" height="480" width="330">
-                <h1>${x.title.substring(0,20)}</h1>
-            </a>
-        </div>`
+app.get("/api/toprated", (req,res) =>{
+    utils.topRated().then(x =>{
+        res.send(x)
     })
+})
 
-    const f =data.replace(/{data}/g, code)
+app.get("/api/list/:id", (req,res)=>{
+    if(!req.params.id) return res.send({error: "Missing Term"})
+    utils.list(req.params.id).then(x =>{
+res.send(x)})
+})
 
-    res.setHeader('Content-Type', 'text/html')
-    res.send(f)
-
+app.get("/api/similar/:id/:type", (req,res)=>{
+    if(!req.params.id || !req.params.type) return res.send({error: "Missing Term"})
+    utils.similar(req.params.id, req.params.type).then(x =>{
+res.send(x)})
 })
 
 app.get("/play/:id", async(req,res) =>{
 
+    if(!req.params.id) return res.send({error: "Missing ID"})
+    let sources = "";
+    let imdb = "";
+    let type = ""
+    let q = ""
+    if(req.query.series === "1"){
+        imdb = (await utils.tmdbtoimdb(req.params.id, "tv"))
+        type ="tv"
+        sources = utils.idToSource(imdb.id,req.params.id,"tv")
+        q = "?series=1"
+    }else{
+        imdb = (await utils.tmdbtoimdb(req.params.id, "movie"))
+        type ="movie"
+        sources = utils.idToSource(imdb.id,req.params.id,"movie")
+    }
+    const fs = require("fs")
+    const file = fs.readFileSync("./public/watch.html", "utf-8")
+    const msg = `${imdb.title} (${imdb.year}) ${imdb.rating.star} ⭐<br>${secondsToHms(imdb.runtimeSeconds)} ${imdb.spokenLanguages.map(x => x.language).join(", ")} ${imdb.genre.map(x=>x).join(", ")}<br>Director(s): ${imdb.directors.map(x=>x).join(", ")}<br>Actors: ${imdb.actors.map(x=>x).join(", ")}<br><br>${imdb.plot} `
+    const sourceName = Object.keys(sources)
+    const sourceURL = Object.values(sources)
+    let i = 0
+    let txt = ""
+    while(i !== sourceName.length){
+        txt += `<option value="${sourceURL[i]}">${sourceName[i]}</option>\n`
+        i++
+    }
 
-    const id = req.params.id
+    const re = file.replace(/{name}/g, imdb.title).replace(/{id}/g, imdb.id).replace(/{streamurl}/g, sources["vidsrc.me"]).replace(/{imgurl}/g, imdb.image).replace(/{text}/g, msg).replace(/{ddcode}/g, txt).replace(/{type}/g, type).replace(/{tmdbid}/g, req.params.id).replace(/{q}/g, q)
 
-    if(!id) return res.sendStatus(400)
-
-    const fa = await imdb.title(id)
-    const stream = await streamfetch(fa.id, fa.contentType)
-    const d = fs.readFileSync("./public/watch.html", "utf-8")
-    const msg = `${fa.rating.star}⭐ ${fa.contentRating} ${fa.runtime} ${fa.title} ${fa.releaseDetailed.year}<br>${fa.genre.map(x => x).join(", ")}<br><br>${fa.plot}`
-    const fi = d.replace(/{url}/g, stream).replace(/{imgurl}/g, fa.image).replace(/{title}/g, fa.title).replace(/{id}/g , fa.id).replace(/{msg}/g, msg).replace(/{desc}/g, fa.plot).replace(/{img}/g, fa.image)
-    res.setHeader("Content-Type", 'text/html')
-    res.send(fi)
+    res.setHeader("Content-Type", "text/html")
+    res.send(re)
 
 })
 
-app.listen(8000, x => console.log("http://localhost:8000"))
+app.get("/search", async(req,res) =>{
+
+    if(!req.query.q) res.send({error: "Missing Query"})
+    const data = await utils.search(req.query.q)
+    if(!data?.results) return res.send({"error": "No results found"});
+    let txt = ""
+    data.results.forEach(x =>{
+        let url = ""
+        if(x.media_type === "tv"){
+            url = `/play/${x.id}?series=1`
+        }else{
+            url = `/play/${x.id}`
+        }
+
+        txt += `<a href="${url}"><img src="https://image.tmdb.org/t/p/original${x.poster_path}"></a>`
+
+    })
+    const fs = require("fs")
+    const file = fs.readFileSync("./public/search.html", "utf-8")
+    const final = file.replace(/{term}/g, req.query.q).replace(/{code}/g, txt)
+    res.setHeader("Content-Type", "text/html")
+    res.send(final)
+})
+
+app.listen(8080)
