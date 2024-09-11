@@ -64,7 +64,7 @@ app.get("/play/:id", async(req,res) =>{
     }
     const fs = require("fs")
     const file = fs.readFileSync("./public/watch.html", "utf-8")
-    const msg = `${imdb.title} (${imdb.year}) ${imdb.rating.star} ⭐<br>${secondsToHms(imdb.runtimeSeconds)} ${imdb.spokenLanguages.map(x => x.language).join(", ")} ${imdb.genre.map(x=>x).join(", ")}<br>Director(s): ${imdb.directors.map(x=>x).join(", ")}<br>Actors: ${imdb.actors.map(x=>x).join(", ")}<br><br>${imdb.plot} `
+    const msg = `${imdb.title} (${imdb.year}) ${imdb.rating?.star} ⭐<br>${secondsToHms(imdb.runtimeSeconds)} ${imdb.spokenLanguages?.map(x => x.language).join(", ")} ${imdb.genre?.map(x=>x).join(", ")}<br>Director(s): ${imdb.directors?.map(x=>x).join(", ")}<br>Actors: ${imdb.actors?.map(x=>x).join(", ")}<br><br>${imdb.plot} `
     const sourceName = Object.keys(sources)
     const sourceURL = Object.values(sources)
     let i = 0
