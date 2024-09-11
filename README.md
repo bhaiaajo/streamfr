@@ -4,4 +4,5 @@
 - Faster Response to Search Results
 - Server side is written from scratch to prevent mess
 - UI Changes
-- vidsrc.me used over vidsrc.to
+- Multiple Sources
+- Continue Watching
