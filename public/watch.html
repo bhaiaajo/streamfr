@@ -3,72 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/watch.css">
-    <title>{title} {id}</title>
-    <meta property="og:title" content="stream fr" />
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="https://streamfr.onrender.com/play/{id}" />
-    <meta property="og:description" content="{desc}" />
-    <meta property="og:image" content="{img}" />
-    <script type='text/javascript' src='//pl22991898.highcpmgate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
-    <script async="async" data-cfasync="false" src="//pl23008515.highcpmgate.com/991e573b2bbe85d6a56d90d2ab7e8191/invoke.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
+    <title>{name} - {id} - stream fr</title>
+    <link rel="stylesheet" href="/css/play.css">
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-2GSJRJYKS0');
-    </script>
-    <script>
-        window.onload = () =>{
-    document.getElementById("submit").onclick = () =>{
-
-        if(!document.getElementById("textbox").value) return alert("Please enter a search term")
-        location.href = "/search?q=" + document.getElementById("textbox").value
-
-    }
-
-    document.addEventListener("keypress", (e) =>{
-        if(e.keyCode === 13){
-            const searchTerm = document.getElementById("textbox").value
-    
-            if(!searchTerm) return alert("Please enter a search term")
-    
-            window.open("/search?q="+ searchTerm)
-            document.getElementById("textbox").value = ""
+        window.onload = ()=>{
+            fetch(`/api/similar/{tmdbid}/{type}`).then(g =>g.json()).then(y =>{
+            const addDiv = document.getElementById("images")
+            y.results.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}{q}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+        })
+        let cw = localStorage.getItem("continue") || localStorage.setItem("continue", "[]")
+        try {
+            cw = JSON.parse(cw) || []
+        }catch{
+            cw = JSON.parse(cw)
         }
-    })
+        cw.push({name: "{name}", src: "{imgurl}", id: "{tmdbid}", href: window.location.href + "{q}", type: "{type}"})
+        const s = cw.filter((value, index, self) =>
+  index === self.findIndex((t) => (
+    t.place === value.place && t.name === value.name
+  ))
+    )
+        localStorage.setItem("continue", JSON.stringify(s))
+        document.getElementById("submit").onclick = () =>{
+
+if(!document.getElementById("search").value) return alert("Please enter a search term")
+window.location.href = "/search?q=" + document.getElementById("search").value
+
 }
+
+document.addEventListener("keypress", (e) =>{
+if(e.keyCode === 13){
+    const searchTerm = document.getElementById("search").value
+
+    if(!searchTerm) return alert("Please enter a search term")
+
+    window.open("/search?q="+ searchTerm)
+    document.getElementById("textbox").value = ""
+    window.location.href = "/search?q=" + document.getElementById("search").value
+}
+})
+        }
+        function onChange(obj){
+            const video = document.getElementById("frame")
+            video.src = `${obj.value}`
+        }
     </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-2GSJRJYKS0');
+        </script>
+        <script type='text/javascript' src='https://pl22991898.cpmrevenuegate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
 </head>
 <body>
-    <ul>
-        <li>
-            <a href="/">Home</a>
-        </li>
-        <li>
-            |
-        </li>
-        <li>
-        <a href="https://discord.gg/bqXhREHEDt">Discord</a>
-        </li>
-        <li>|</li>
-        <li>
+    <div class="topnav">
+        <h1 style="color: white;float: left; font-size: 25px; margin-right: 15px; margin-left: 15px;font-family: Arial, Helvetica, sans-serif;">stream fr</h1>
+        <a href="/">Home</a>
         <a href="https://github.com/bhaiaajo">Github</a>
-        </li>
-        </ul>
-    <center>
+        <a href="https://discord.com/invite/bqXhREHEDt">Discord</a>
+      </div>
+      <center>
         <div class="search">
-            <input type="text" placeholder="Search" id="textbox">
-            <button id="submit">🔍</button>
+            <input type="text" placeholder="Search Movies/Shows" id="search" class="searchbar">
+            <button id="submit" class="submit">🔍</button>
         </div>
-    </center>
-    <iframe src="{url}" frameborder="0" allowfullscreen></iframe>
-    <div id="container-991e573b2bbe85d6a56d90d2ab7e8191"></div>
-    <div class="info">
-        <img src="{imgurl}" alt="{title}-img"style="float: left; margin-right: 20px;" height="400" width="250">
-        <p>{msg}</p>
+      </center>
+    <h1 style="color: white; font-family: 'Courier New', Courier, monospace;">
+        Sources (Change if not working or for languages): 
+    </h1>
+    <div class="select">
+        <select id="server" onchange="onChange(this)">
+            {ddcode}
+        </select>
+        </div>
+    <iframe src="{streamurl}" frameborder="0" allowfullscreen style="width: 100%;height:700px;" id="frame">
+    </iframe>
+    <div class="infobox">
+        <img src="{imgurl}" alt="Image">
+        <p>{text}</p>
+    </div>
+    <br>
+    <div class="similar" id="similar" style="display: block;margin-left: 20px;">
+        <h1 style="color: whitesmoke;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Similar movies/shows to watch</h1>
+        <div id="images" class="image"></div>
     </div>
 </body>
 </html>
