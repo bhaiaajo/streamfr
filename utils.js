@@ -72,6 +72,25 @@ const d = await (await fetch(url, options)).json()
 }
 
 
+async function trendingtv(){
+    const fetch = require('node-fetch');
+
+const url = `https://api.themoviedb.org/3/trending/tv/week?language=en-US`;
+
+const d = await (await fetch(url, options)).json()
+
+    return d
+}
+async function trendingMovie(){
+    const fetch = require('node-fetch');
+
+const url = `https://api.themoviedb.org/3/trending/movie/week?language=en-US`;
+
+const d = await (await fetch(url, options)).json()
+
+    return d
+}
+
 function idToSource(id,tmdbid, type){
     if(type === "movie"){
         return {
@@ -107,5 +126,7 @@ module.exports = {
     idToSource,
     similar,
     list,
-    tdtid
+    tdtid,
+    trendingMovie,
+    trendingtv
 }
