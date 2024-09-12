@@ -9,7 +9,7 @@
     <script>
         window.onload = ()=>{
             fetch(`/api/similar/{tmdbid}/{type}`).then(g =>g.json()).then(y =>{
-            const addDiv = document.getElementById("images")
+            const addDiv = document.getElementById("image")
             y.results.forEach(x=>{
                 const img = document.createElement("img")
                 img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
@@ -25,7 +25,7 @@
         }catch{
             cw = JSON.parse(cw)
         }
-        cw.push({name: "{name}", src: "{imgurl}", id: "{tmdbid}", href: window.location.href + "{q}", type: "{type}"})
+        cw.push({name: "{name}", src: "{imgurl}", id: "{tmdbid}", href: window.location.href, type: "{type}"})
         const s = cw.filter((value, index, self) =>
   index === self.findIndex((t) => (
     t.place === value.place && t.name === value.name
@@ -98,9 +98,14 @@ if(e.keyCode === 13){
         <p>{text}</p>
     </div>
     <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <div class="similar" id="similar" style="display: block;margin-left: 20px;">
         <h1 style="color: whitesmoke;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Similar movies/shows to watch</h1>
-        <div id="images" class="image"></div>
+        <div id="image" class="image">
+        </div>
     </div>
 </body>
 </html>
