@@ -78,7 +78,7 @@ body {
     overflow: auto;
     white-space: nowrap;
     padding: 10px;
-    height: 300px
+    height: 300px;
   }
   img{
     width: 170px;
@@ -104,30 +104,46 @@ body {
 
 .movierecdiv {
     margin-left: 20px;
+    margin-top: 30px;
 }
 
 .images::-webkit-scrollbar-thumb{
     background: grey;
-    border-radius: 10px 10px 10px 10px;;
-
+    border-radius: 25px;
 }
 .images::-webkit-scrollbar{
-    background: black;
-
+    background: #333;
+    border-radius: 25px;
 }
 
 body::-webkit-scrollbar{
   background: black;
+  border-radius: 25px;
 }
 body::-webkit-scrollbar-thumb{
   background: grey;
-  border-radius: 10px 10px 10px 10px;;
+  border-radius: 25px;
 }
 body::-webkit-scrollbar-button{
   background-color: #086cdf;
-  border-radius: 10px 10px 10px 10px;;
+  border-radius: 25px;
 }
 a {
   color: #0066cc;
   text-decoration: none;
+}
+.main{
+  background-color: #333;
+  width: 93%;
+  border: 2px solid #333;
+  border-radius: 25px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+footer{
+  width: 100%;
+  background-color: rgb(65, 65, 65);
 }
