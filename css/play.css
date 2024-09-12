@@ -6,15 +6,15 @@ body{
 img{
     height: 400px;
     width: 250px;
-    border-radius: 10px 0 0 10px;
+    border-radius: 10px 10px 10px 10px;
     float: left;
     margin-right: 5px;
 }
 .infobox{
     margin-right: 20px;
     display: block;
-    height: 400px;
-    border-radius: 10px 0 0 10px;
+    height: 100%;
+    border-radius: 10px 10px 10px 10px;
 }
 p{
     display: block;
@@ -162,4 +162,22 @@ p{
     color: #111;
     background: white;
     box-shadow: 0 0 20px white;
+  }
+
+  .similar img{
+    width: 170px;
+    height: 250px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+  body::-webkit-scrollbar{
+    background: black;
+  }
+  body::-webkit-scrollbar-thumb{
+    background: grey;
+    border-radius: 10px 10px 10px 10px;;
+  }
+  body::-webkit-scrollbar-button{
+    background-color: #086cdf;
+    border-radius: 10px 10px 10px 10px;;
   }
