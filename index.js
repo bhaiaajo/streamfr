@@ -105,4 +105,12 @@ app.get("/search", async(req,res) =>{
     res.send(final)
 })
 
+app.get("/api/trending/tv", (req,res) =>{
+    utils.trendingtv().then(g=>res.send(g))
+})
+
+app.get("/api/trending/movie", (req,res) =>{
+    utils.trendingMovie().then(g=>res.send(g))
+})
+
 app.listen(8080)
