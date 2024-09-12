@@ -98,6 +98,30 @@ document.addEventListener("keypress", (e) =>{
             })
 
         })
+        fetch("/api/trending/movie").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("trendingimages")
+            data.results.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+        fetch("/api/trending/tv").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("trendingtvimages")
+            data.results.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}?series=1`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
         //7062993 Horror Movies Horror Movies by arf2k
         fetch("/api/list/7062993").then(g => g.json()).then(data =>{
             const addDiv = document.getElementById("7062993images")
@@ -124,7 +148,33 @@ document.addEventListener("keypress", (e) =>{
             })
 
         })
-    }   
+        //12565 psychological thriller list
+        fetch("/api/list/12565").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("12565images")
+            data.items.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+        //110121 TV Shows by wan_
+        fetch("/api/list/110121").then(g => g.json()).then(data =>{
+            const addDiv = document.getElementById("110121images")
+            data.items.forEach(x=>{
+                const img = document.createElement("img")
+                img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
+                const anchor = document.createElement("a")
+                anchor.href = `/play/${x.id}?series=1`
+                anchor.appendChild(img)
+                addDiv.appendChild(anchor)
+            })
+
+        })
+    }           
     </script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -159,8 +209,18 @@ document.addEventListener("keypress", (e) =>{
         </div>
     </div>
     <div class="movierecdiv">
+        <h1 style="color: white;">Trending Movies</h1>
+        <div class="images" id="trendingimages">
+        </div> 
+    </div>
+    <div class="movierecdiv">
         <h1 style="color: white;">Discover Movies</h1>
         <div class="images" id="discoverimages">
+        </div> 
+    </div>
+    <div class="movierecdiv">
+        <h1 style="color: white;">Trending TV Shows</h1>
+        <div class="images" id="trendingtvimages">
         </div> 
     </div>
     <div class="movierecdiv">
@@ -169,8 +229,18 @@ document.addEventListener("keypress", (e) =>{
         </div> 
     </div>
     <div class="movierecdiv">
+        <h1 style="color: white;">Psychological Thriller Movies</h1>
+        <div class="images" id="12565images">
+        </div> 
+    </div>
+    <div class="movierecdiv">
         <h1 style="color: white;">Sci Fi List by WardenclyffeTower</h1>
         <div class="images" id="3945images">
+        </div> 
+    </div>
+    <div class="movierecdiv">
+        <h1 style="color: white;">TV Show list by wan_</h1>
+        <div class="images" id="110121images">
         </div> 
     </div>
     <div class="movierecdiv">
