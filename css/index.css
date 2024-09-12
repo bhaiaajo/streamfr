@@ -115,3 +115,15 @@ body {
     background: black;
 
 }
+
+body::-webkit-scrollbar{
+  background: black;
+}
+body::-webkit-scrollbar-thumb{
+  background: grey;
+  border-radius: 10px 10px 10px 10px;;
+}
+body::-webkit-scrollbar-button{
+  background-color: #086cdf;
+  border-radius: 10px 10px 10px 10px;;
+}
