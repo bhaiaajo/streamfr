@@ -92,6 +92,7 @@ p{
   }
 
   .topnav {
+    font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
     background-color: #333;
   }
