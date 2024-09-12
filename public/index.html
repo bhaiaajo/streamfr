@@ -128,7 +128,7 @@ document.addEventListener("keypress", (e) =>{
                 const img = document.createElement("img")
                 img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
                 const anchor = document.createElement("a")
-                anchor.href = `/play/${x.id}`
+                anchor.href = `/play/${x.id}?series=1`
                 anchor.appendChild(img)
                 addDiv.appendChild(anchor)
             })
@@ -260,5 +260,11 @@ document.addEventListener("keypress", (e) =>{
         <div class="images" id="7062993images">
         </div> 
     </div>
+    <center>
+    <footer style="font-family: 'Courier New', Courier, monospace; color: white;">
+        <h1>2024 stream fr, A <a href="https://bhaiaajo.github.io">Bhai aajo</a> Site</h1>
+        <a href="/privacypolicy" style="font-size: 20px;">Privacy Policy</a>
+    </footer>
+    </center>
 </body>
 </html>
