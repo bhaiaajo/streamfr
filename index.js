@@ -105,6 +105,10 @@ app.get("/search", async(req,res) =>{
     res.send(final)
 })
 
+app.get("/privacypolicy", (req,res) =>{
+    res.sendFile(__dirname + "/public/pp.html")
+})
+
 app.get("/api/trending/tv", (req,res) =>{
     utils.trendingtv().then(g=>res.send(g))
 })
