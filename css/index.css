@@ -127,3 +127,7 @@ body::-webkit-scrollbar-button{
   background-color: #086cdf;
   border-radius: 10px 10px 10px 10px;;
 }
+a {
+  color: #0066cc;
+  text-decoration: none;
+}
