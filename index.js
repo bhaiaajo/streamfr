@@ -113,4 +113,10 @@ app.get("/api/trending/movie", (req,res) =>{
     utils.trendingMovie().then(g=>res.send(g))
 })
 
+app.get("/api/keyword/:id", (req,res)=>{
+    if(!req.params.id) return res.send({error: "Missing Term"})
+    utils.keyword(req.params.id).then(x =>{
+res.send(x)})
+})
+
 app.listen(8080)
