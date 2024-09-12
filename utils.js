@@ -90,7 +90,15 @@ const d = await (await fetch(url, options)).json()
 
     return d
 }
+async function keyword(id){
+    const fetch = require('node-fetch');
 
+const url = `https://api.themoviedb.org/3/keyword/${id}/movies?include_adult=false&language=en-US&page=1`;
+
+const d = await (await fetch(url, options)).json()
+
+    return d
+}
 function idToSource(id,tmdbid, type){
     if(type === "movie"){
         return {
@@ -128,5 +136,6 @@ module.exports = {
     list,
     tdtid,
     trendingMovie,
-    trendingtv
+    trendingtv,
+    keyword
 }
