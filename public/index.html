@@ -128,7 +128,7 @@ document.addEventListener("keypress", (e) =>{
                 const img = document.createElement("img")
                 img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
                 const anchor = document.createElement("a")
-                anchor.href = `/play/${x.id}?series=1`
+                anchor.href = `/play/${x.id}`
                 anchor.appendChild(img)
                 addDiv.appendChild(anchor)
             })
