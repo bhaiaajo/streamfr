@@ -114,7 +114,8 @@ function idToSource(id,tmdbid, type){
             "vidsrc.icu": `https://vidsrc.icu/embed/movie/${id}`
             "vidsrc.cc": `https://vidsrc.cc/v2/embed/movie/${tmdbid}`,
             "moviesapi.club": `https://moviesapi.club/movie/${tmdbid}`,
-            "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`
+            "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`,
+            "gomo.to": `https://gomo.to/movie/${id}`
         }
     }else{
         return {
