@@ -111,7 +111,7 @@ function idToSource(id,tmdbid, type){
             "2embed.cc": `https://www.2embed.cc/embed/${id}`,
             "vidlink.pro": `https://vidlink.pro/movie/${tmdbid}`,
             "vidsrc.pro": `https://vidsrc.pro/embed/movie/${tmdbid}`,
-            "vidsrc.icu": `https://vidsrc.icu/embed/movie/${id}`
+            "vidsrc.icu": `https://vidsrc.icu/embed/movie/${id}`,
             "vidsrc.cc": `https://vidsrc.cc/v2/embed/movie/${tmdbid}`,
             "moviesapi.club": `https://moviesapi.club/movie/${tmdbid}`,
             "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`,
