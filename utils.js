@@ -105,12 +105,14 @@ function idToSource(id,tmdbid, type){
             "vidsrc.me": `https://vidsrc.xyz/embed/movie/${id}`,
             "vidsrc.rip": `https://vidsrc.rip/embed/movie/${id}`,
             "autoembed.cc": `https://player.autoembed.cc/embed/movie/${id}`,
+            "sdsp.xyz (English and Hindi)": `https://v1.sdsp.xyz/embed/movie/${tmdbid}`
+            "smashystream.com (Multi Lang)": `https://player.smashy.stream/movie/${id}`,
             "superembed.stream": `https://multiembed.mov/directstream.php?video_id=${id}`,
             "2embed.cc": `https://www.2embed.cc/embed/${id}`,
             "vidlink.pro": `https://vidlink.pro/movie/${tmdbid}`,
             "vidsrc.pro": `https://vidsrc.pro/embed/movie/${tmdbid}`,
+            "vidsrc.icu": `https://vidsrc.icu/embed/movie/${id}`
             "vidsrc.cc": `https://vidsrc.cc/v2/embed/movie/${tmdbid}`,
-            "smashystream.com": `https://player.smashy.stream/movie/${id}`,
             "moviesapi.club": `https://moviesapi.club/movie/${tmdbid}`,
             "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`
         }
