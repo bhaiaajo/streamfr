@@ -115,7 +115,8 @@ function idToSource(id,tmdbid, type){
             "vidsrc.cc": `https://vidsrc.cc/v2/embed/movie/${tmdbid}`,
             "moviesapi.club": `https://moviesapi.club/movie/${tmdbid}`,
             "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`,
-            "gomo.to": `https://gomo.to/movie/${id}`
+            "gomo.to": `https://gomo.to/movie/${id}`,
+            "vidbinge.com": `https://www.vidbinge.com/media/tmdb-movie-${tmdbid}`
         }
     }else{
         return {
@@ -124,7 +125,8 @@ function idToSource(id,tmdbid, type){
             "moviesapi.club": `https://moviesapi.club/tv/${tmdbid}`,
             "2embed.cc": `https://www.2embed.cc/embedtvfull/${id}`,
             "vidsrc.pro": `https://vidsrc.pro/embed/movie/${tmdbid}`,
-            "vidsrc.cc": `https://vidsrc.cc/v2/embed/tv/${id}`
+            "vidsrc.cc": `https://vidsrc.cc/v2/embed/tv/${id}`,
+            "vidbinge.com": `https://www.vidbinge.com/media/tmdb-tv-${tmdbid}`
         }
     }
 }
