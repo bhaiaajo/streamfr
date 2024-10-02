@@ -117,8 +117,8 @@ function idToSource(id,tmdbid, type){
             "vidsrc.nl":`https://player.vidsrc.nl/embed/movie/${tmdbid}`,
             "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`,
             "gomo.to": `https://gomo.to/movie/${id}`,
-            "nontongo.win":`nontongo.win/embed/movie/${tmdbid}`,
-            "multiembed.mov":`multiembed.mov/directstream.php/?tmdb=1&video_id=${tmdbid}`,
+            "nontongo.win":`https://nontongo.win/embed/movie/${tmdbid}`,
+            "multiembed.mov":`https://multiembed.mov/directstream.php/?tmdb=1&video_id=${tmdbid}`,
             "vidbinge.com": `https://www.vidbinge.com/media/tmdb-movie-${tmdbid}`
         }
     }else{
