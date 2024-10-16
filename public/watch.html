@@ -18,10 +18,14 @@
         function fetchEasyList() {
           return fetch('https://easylist.to/easylist/easylist.txt')
             .then(response => response.text())
-            .then(data => data.match(/[\w.-]+\.(com|net|org|info)/g) || [])
+            .then(data => {
+              const domainPatterns = data.match(/\|\|([\w.-]+)\^/g) || []; // Match ||domain^ patterns
+              const complexPatterns = data.match(/\|\|([\w.-]+)(\/[^\s]*)?\^(\$[^\s]*)?/g) || []; // Match complex filters with paths
+              return { domainPatterns, complexPatterns };
+            })
             .catch(error => {
               console.error('Error fetching EasyList:', error);
-              return [];
+              return { domainPatterns: [], complexPatterns: [] };
             });
         }
         
@@ -29,27 +33,43 @@
         function fetchBadwareList() {
           return fetch('https://github.com/uBlockOrigin/uAssets/raw/refs/heads/master/filters/badware.txt')
             .then(response => response.text())
-            .then(data => data.split('\n').map(domain => domain.trim()).filter(Boolean))
+            .then(data => {
+              const domainPatterns = data.match(/\|\|([\w.-]+)\^/g) || []; // Match ||domain^ patterns
+              const complexPatterns = data.match(/\|\|([\w.-]+)(\/[^\s]*)?\^(\$[^\s]*)?/g) || []; // Match complex filters with paths
+              return { domainPatterns, complexPatterns };
+            })
             .catch(error => {
               console.error('Error fetching Badware list:', error);
-              return [];
+              return { domainPatterns: [], complexPatterns: [] };
             });
         }
         
-        // Block dynamically added iframes/divs based on known ad patterns
-        function blockAdsByPatterns(adDomains) {
+        // Convert complex filter patterns to regex for matching
+        function convertToRegex(pattern) {
+          const [domain, path] = pattern.split('^');
+          const regexPath = path.replace(/\*/g, '.*'); // Replace * with .*
+          return new RegExp(domain + regexPath);
+        }
+        
+        // Block dynamically added iframes/divs/scripts based on known ad patterns and complex filters
+        function blockAdsByPatterns(adDomains, complexFilters) {
           const adPatterns = [/ad/, /sponsored/, /promoted/, /banner/, /doubleclick/, /adsense/];
           const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
               mutation.addedNodes.forEach((node) => {
-                if (node.tagName === 'IFRAME' || node.tagName === 'DIV') {
+                if (['IFRAME', 'DIV', 'SCRIPT', 'IMG'].includes(node.tagName)) {
                   const isAdBySrc = adPatterns.some(pattern => pattern.test(node.src || ''));
                   const isAdByClass = adPatterns.some(pattern => pattern.test(node.className || ''));
                   const isAdByDomain = adDomains.some(domain => (node.src || '').includes(domain));
                   const isAdBySize = (node.offsetWidth <= 300 && node.offsetHeight <= 250);
+                  
+                  const isAdByComplexFilter = complexFilters.some(filter => {
+                    const regex = convertToRegex(filter);
+                    return regex.test(node.src || '');
+                  });
         
-                  if (isAdBySrc || isAdByClass || isAdByDomain || isAdBySize) {
-                    console.log('Ad blocked by pattern:', node);
+                  if (isAdBySrc || isAdByClass || isAdByDomain || isAdBySize || isAdByComplexFilter) {
+                    console.log('Ad blocked by pattern or filter:', node);
                     node.remove();
                   }
                 }
@@ -63,14 +83,50 @@
           });
         }
         
+        // Block redirects caused by ads
+        function preventRedirects() {
+          // Intercept window.location changes
+          let originalLocationAssign = window.location.assign;
+          window.location.assign = function(url) {
+            console.log('Blocked redirect attempt to:', url);
+          };
+        
+          let originalLocationReplace = window.location.replace;
+          window.location.replace = function(url) {
+            console.log('Blocked redirect attempt to:', url);
+          };
+        
+          // Disable window.open to block pop-up windows
+          window.open = function(url) {
+            console.log('Blocked pop-up attempt to:', url);
+          };
+        
+          // Prevent clicks on elements that would cause a redirect
+          document.addEventListener('click', function(event) {
+            const target = event.target;
+            if (target.tagName === 'A' && target.href) {
+              const isAdLink = target.href.includes('ad') || target.href.includes('click');
+              if (isAdLink) {
+                console.log('Blocked ad link redirect:', target.href);
+                event.preventDefault(); // Block the redirection
+              }
+            }
+          }, true);
+        }
+        
         // Periodic ad checking
-        function periodicAdCheck(adDomains) {
+        function periodicAdCheck(adDomains, complexFilters) {
           setInterval(() => {
-            const ads = document.querySelectorAll('iframe, div');
+            const ads = document.querySelectorAll('iframe, div, script, img');
             ads.forEach(ad => {
-              const isAdByDomain = adDomains.some(domain => ad.src.includes(domain));
-              if (isAdByDomain) {
-                console.log('Ad iframe blocked during periodic check:', ad.src);
+              const isAdByDomain = adDomains.some(domain => ad.src && ad.src.includes(domain));
+              const isAdByComplexFilter = complexFilters.some(filter => {
+                const regex = convertToRegex(filter);
+                return regex.test(ad.src || '');
+              });
+        
+              if (isAdByDomain || isAdByComplexFilter) {
+                console.log('Ad iframe blocked during periodic check:', ad.src || ad.className);
                 ad.remove();
               }
             });
@@ -78,19 +134,21 @@
         }
         
         // Fetch EasyList and Badware list, then initiate blocking
-        Promise.all([fetchEasyList(), fetchBadwareList()]).then(([easyListDomains, badwareDomains]) => {
-          const combinedDomains = [...easyListDomains, ...badwareDomains];
-          if (combinedDomains.length > 0) {
-            blockAdsByPatterns(combinedDomains);  // Block ads dynamically
-            periodicAdCheck(combinedDomains);     // Ensure periodic checking
+        Promise.all([fetchEasyList(), fetchBadwareList()]).then(([easyList, badwareList]) => {
+          const combinedDomains = [...easyList.domainPatterns, ...badwareList.domainPatterns];
+          const combinedFilters = [...easyList.complexPatterns, ...badwareList.complexPatterns];
+          
+          if (combinedDomains.length > 0 || combinedFilters.length > 0) {
+            blockAdsByPatterns(combinedDomains, combinedFilters);  // Block ads dynamically
+            periodicAdCheck(combinedDomains, combinedFilters);     // Ensure periodic checking
           } else {
-            console.error('Failed to load ad domains from EasyList or Badware list.');
+            console.error('Failed to load ad domains or filters from EasyList or Badware list.');
           }
+        
+          // Block redirects caused by ads
+          preventRedirects();
         });
         </script>
-        
-        
-        
         
       <script>
          window.onload = ()=>{
