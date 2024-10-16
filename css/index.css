@@ -28,7 +28,46 @@ body {
     background-color: #086cdf;
     color: white;
   }
+.notice-banner {
+  background-color: #fff5b1; /* Soft yellow background */
+  color: #333;               /* Dark text for contrast */
+  padding: 20px;            /* Padding around the text */
+  border-left: 5px solid #086cdf; /* Blue left border */
+  border-radius: 8px;       /* Rounded corners */
+  margin: 20px 0;           /* Margin for spacing */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Adds shadow for depth */
+  transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+  width: 50%
+}
 
+.notice-banner:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.notice-banner p {
+  margin: 0;                /* Remove default paragraph margin */
+  line-height: 1.6;         /* Improved line height for readability */
+  font-size: 18px;          /* Font size */
+}
+
+.notice-banner a {
+  color: #086cdf;            /* Blue link color */
+  text-decoration: none;      /* Remove underline */
+  font-weight: bold;         /* Bold link text */
+  transition: color 0.3s;   /* Smooth color transition */
+}
+
+.notice-banner a:hover {
+  color: #004a8f;            /* Darken link on hover */
+  text-decoration: underline; /* Underline on hover for emphasis */
+}
+
+@media (max-width: 600px) {
+  .notice-banner p {
+      font-size: 16px;      /* Smaller font size on mobile */
+  }
+}
   .searchbar {
   background-color: rgb(250, 251, 252);
   border-color: rgb(223, 225, 230);
