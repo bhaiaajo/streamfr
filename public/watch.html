@@ -14,64 +14,62 @@
       </script>
       <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
       <script>
-        // Fetch EasyList and badware patterns
-        function fetchEasyList() {
-          return fetch('https://easylist.to/easylist/easylist.txt')
-            .then(response => response.text())
-            .then(data => {
-              const domainPatterns = data.match(/\|\|([\w.-]+)\^/g) || []; // Match ||domain^ patterns
-              const complexPatterns = data.match(/\|\|([\w.-]+)(\/[^\s]*)?\^(\$[^\s]*)?/g) || []; // Match complex filters with paths
-              return { domainPatterns, complexPatterns };
-            })
-            .catch(error => {
-              console.error('Error fetching EasyList:', error);
-              return { domainPatterns: [], complexPatterns: [] };
+        // Function to fetch ad patterns from EasyList, Badware List, and uBlock filters
+        async function fetchAdPatterns() {
+          try {
+            // Fetch EasyList
+            const easyListResponse = await fetch('https://easylist.to/easylist/easylist.txt');
+            const easyListData = await easyListResponse.text();
+            const easyListPatterns = easyListData.match(/(?:\|\|)([^\^]+)\^/g) || [];
+        
+            // Fetch Badware List
+            const badwareListResponse = await fetch('https://github.com/uBlockOrigin/uAssets/raw/refs/heads/master/filters/badware.txt');
+            const badwareListData = await badwareListResponse.text();
+            const badwarePatterns = badwareListData.match(/(?:\|\|)([^\^]+)\^/g) || [];
+        
+            // Fetch uBlock Filters
+            const uBlockListResponse = await fetch('https://github.com/uBlockOrigin/uAssets/raw/refs/heads/master/filters/filters.txt');
+            const uBlockListData = await uBlockListResponse.text();
+            const uBlockPatterns = uBlockListData.match(/\/\^[^$]+\/\$document/g) || [];
+        
+            // Combine and convert patterns into regular expressions
+            const combinedPatterns = [...easyListPatterns, ...badwarePatterns, ...uBlockPatterns];
+            return combinedPatterns.map(pattern => {
+              // Handle complex regex patterns
+              if (pattern.startsWith('/')) {
+                return new RegExp(pattern.slice(1, -10).replace(/\^/g, '').replace(/\\/g, ''));
+              }
+              // Handle basic domain blocking patterns
+              return new RegExp(pattern.replace(/\|\|/, '').replace(/\^/, ''));
             });
+          } catch (error) {
+            console.error('Error fetching ad blocklists:', error);
+            return [];
+          }
         }
         
-        // Fetch badware list
-        function fetchBadwareList() {
-          return fetch('https://github.com/uBlockOrigin/uAssets/raw/refs/heads/master/filters/badware.txt')
-            .then(response => response.text())
-            .then(data => {
-              const domainPatterns = data.match(/\|\|([\w.-]+)\^/g) || []; // Match ||domain^ patterns
-              const complexPatterns = data.match(/\|\|([\w.-]+)(\/[^\s]*)?\^(\$[^\s]*)?/g) || []; // Match complex filters with paths
-              return { domainPatterns, complexPatterns };
-            })
-            .catch(error => {
-              console.error('Error fetching Badware list:', error);
-              return { domainPatterns: [], complexPatterns: [] };
-            });
+        // Match the URL against all combined regex patterns
+        function isAdRedirect(url, regexPatterns) {
+          return regexPatterns.some(regex => regex.test(url));
         }
         
-        // Convert complex filter patterns to regex for matching
-        function convertToRegex(pattern) {
-          const [domain, path] = pattern.split('^');
-          const regexPath = path.replace(/\*/g, '.*'); // Replace * with .*
-          return new RegExp(domain + regexPath);
-        }
-        
-        // Block dynamically added iframes/divs/scripts based on known ad patterns and complex filters
-        function blockAdsByPatterns(adDomains, complexFilters) {
-          const adPatterns = [/ad/, /sponsored/, /promoted/, /banner/, /doubleclick/, /adsense/];
-          const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-              mutation.addedNodes.forEach((node) => {
-                if (['IFRAME', 'DIV', 'SCRIPT', 'IMG'].includes(node.tagName)) {
-                  const isAdBySrc = adPatterns.some(pattern => pattern.test(node.src || ''));
-                  const isAdByClass = adPatterns.some(pattern => pattern.test(node.className || ''));
-                  const isAdByDomain = adDomains.some(domain => (node.src || '').includes(domain));
-                  const isAdBySize = (node.offsetWidth <= 300 && node.offsetHeight <= 250);
-                  
-                  const isAdByComplexFilter = complexFilters.some(filter => {
-                    const regex = convertToRegex(filter);
-                    return regex.test(node.src || '');
-                  });
-        
-                  if (isAdBySrc || isAdByClass || isAdByDomain || isAdBySize || isAdByComplexFilter) {
-                    console.log('Ad blocked by pattern or filter:', node);
-                    node.remove();
-                  }
+        // Block iframe redirects by intercepting navigation attempts inside the iframe
+        function preventIframeRedirects(regexPatterns) {
+          const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+              mutation.addedNodes.forEach(node => {
+                if (node.tagName === 'IFRAME') {
+                  node.onload = () => {
+                    try {
+                      const iframeSrc = node.contentWindow.location.href;
+                      if (isAdRedirect(iframeSrc, regexPatterns)) {
+                        console.log('Blocked iframe redirect:', iframeSrc);
+                        node.contentWindow.location.href = 'about:blank'; // Block the redirect
+                      }
+                    } catch (error) {
+                      console.error('Error blocking iframe redirect:', error);
+                    }
+                  };
                 }
               });
             });
@@ -83,74 +81,66 @@
           });
         }
         
-        // Block redirects caused by ads
-        function preventRedirects() {
-          // Intercept window.location changes
-          let originalLocationAssign = window.location.assign;
+        // Aggressively block window location redirects
+        function preventPageRedirects(regexPatterns) {
+          // Override location.assign and location.replace
+          const originalLocationAssign = window.location.assign;
           window.location.assign = function(url) {
-            console.log('Blocked redirect attempt to:', url);
-          };
-        
-          let originalLocationReplace = window.location.replace;
-          window.location.replace = function(url) {
-            console.log('Blocked redirect attempt to:', url);
-          };
-        
-          // Disable window.open to block pop-up windows
-          window.open = function(url) {
-            console.log('Blocked pop-up attempt to:', url);
-          };
-        
-          // Prevent clicks on elements that would cause a redirect
-          document.addEventListener('click', function(event) {
-            const target = event.target;
-            if (target.tagName === 'A' && target.href) {
-              const isAdLink = target.href.includes('ad') || target.href.includes('click');
-              if (isAdLink) {
-                console.log('Blocked ad link redirect:', target.href);
-                event.preventDefault(); // Block the redirection
-              }
+            if (isAdRedirect(url, regexPatterns)) {
+              console.log('Blocked redirect attempt to:', url);
+            } else {
+              originalLocationAssign.call(window.location, url);
             }
-          }, true);
+          };
+        
+          const originalLocationReplace = window.location.replace;
+          window.location.replace = function(url) {
+            if (isAdRedirect(url, regexPatterns)) {
+              console.log('Blocked redirect attempt to:', url);
+            } else {
+              originalLocationReplace.call(window.location, url);
+            }
+          };
         }
         
-        // Periodic ad checking
-        function periodicAdCheck(adDomains, complexFilters) {
+        // Periodically check for iframe redirects
+        function periodicIframeCheck(regexPatterns) {
           setInterval(() => {
-            const ads = document.querySelectorAll('iframe, div, script, img');
-            ads.forEach(ad => {
-              const isAdByDomain = adDomains.some(domain => ad.src && ad.src.includes(domain));
-              const isAdByComplexFilter = complexFilters.some(filter => {
-                const regex = convertToRegex(filter);
-                return regex.test(ad.src || '');
-              });
-        
-              if (isAdByDomain || isAdByComplexFilter) {
-                console.log('Ad iframe blocked during periodic check:', ad.src || ad.className);
-                ad.remove();
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+              try {
+                const iframeSrc = iframe.contentWindow.location.href;
+                if (isAdRedirect(iframeSrc, regexPatterns)) {
+                  console.log('Blocked iframe redirect during periodic check:', iframeSrc);
+                  iframe.contentWindow.location.href = 'about:blank';
+                }
+              } catch (error) {
+                console.error('Error during iframe redirect check:', error);
               }
             });
-          }, 1000);
+          }, 2000);
         }
         
-        // Fetch EasyList and Badware list, then initiate blocking
-        Promise.all([fetchEasyList(), fetchBadwareList()]).then(([easyList, badwareList]) => {
-          const combinedDomains = [...easyList.domainPatterns, ...badwareList.domainPatterns];
-          const combinedFilters = [...easyList.complexPatterns, ...badwareList.complexPatterns];
-          
-          if (combinedDomains.length > 0 || combinedFilters.length > 0) {
-            blockAdsByPatterns(combinedDomains, combinedFilters);  // Block ads dynamically
-            periodicAdCheck(combinedDomains, combinedFilters);     // Ensure periodic checking
-          } else {
-            console.error('Failed to load ad domains or filters from EasyList or Badware list.');
+        // Fetch ad blocklists and apply blocking mechanisms
+        (async function() {
+          try {
+            const regexPatterns = await fetchAdPatterns();
+            if (regexPatterns.length > 0) {
+              preventIframeRedirects(regexPatterns);  // Block iframe redirects
+              preventPageRedirects(regexPatterns);    // Block page redirects
+              periodicIframeCheck(regexPatterns);     // Periodic iframe checking
+            } else {
+              console.error('No patterns loaded from ad blocklists.');
+            }
+          } catch (error) {
+            console.error('Error setting up ad-blocking:', error);
           }
-        
-          // Block redirects caused by ads
-          preventRedirects();
-        });
+        })();
         </script>
         
-      <script>
+        
+        <script>
+        
          window.onload = ()=>{
              fetch(`/api/similar/{tmdbid}/{type}`).then(g =>g.json()).then(y =>{
              const addDiv = document.getElementById("image")
@@ -170,7 +160,7 @@
              cw = JSON.parse(cw)
          }
          cw.push({name: "{name}", src: "{imgurl}", id: "{tmdbid}", href: window.location.href, type: "{type}"})
-         const s = cw.filter((value, index, self) =>
+         const s = cw.reverse().filter((value, index, self) =>
          index === self.findIndex((t) => (
          t.place === value.place && t.name === value.name
          ))
