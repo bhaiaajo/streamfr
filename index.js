@@ -154,7 +154,7 @@ app.get("/api/player/:id", async(req, res) =>{
 })
 
 app.get("/docs", (req, res) =>{
-    res.sendFile(__dirname + "/apidocs.html")
+    res.sendFile(__dirname + "/public/apidocs.html")
 })
 
 app.listen(8080)
