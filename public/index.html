@@ -20,6 +20,27 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "oculg00e5e");
 </script>
+    <script async data-cfasync="false">
+  (function() {
+      const url = new URL(window.location.href);
+      const clickID = url.searchParams.get("click_id");
+      const sourceID = url.searchParams.get("source_id");
+
+      const s = document.createElement("script");
+      s.dataset.cfasync = "false";
+      s.src = "https://push-sdk.com/f/sdk.js?z=1269518";
+      s.onload = (opts) => {
+          opts.zoneID = 1269518;
+          opts.extClickID = clickID;
+          opts.subID1 = sourceID;
+          opts.actions.onPermissionGranted = () => {};
+          opts.actions.onPermissionDenied = () => {};
+          opts.actions.onAlreadySubscribed = () => {};
+          opts.actions.onError = () => {};
+      };
+      document.head.appendChild(s);
+  })()
+</script>
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script>
         window.onload = ()=>{
