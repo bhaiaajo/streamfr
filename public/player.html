@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "oculg00e5e");
+   </script>
+   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
+   <script type='text/javascript' src='//pl23005862.profitablecpmrate.com/ff/7d/9b/ff7d9b601b209cf4adbc29d2eb05ec50.js'></script>
+   <title>{name} - {id} - player api - streamfr</title>
+   <style>
+      * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+      }
+
+      body, html {
+         height: 100%;
+         overflow: hidden;
+         font-family: Arial, sans-serif;
+      }
+
+      /* Full page iframe styling */
+      iframe {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         border: none;
+      }
+
+      /* Toggle button styling */
+      .toggle-button {
+         position: absolute;
+         top: 10px;
+         right: 10px;
+         width: 40px; /* Adjusted size */
+         height: 40px; /* Adjusted size */
+         background-color: rgba(0, 0, 0, 0.6);
+         color: #fff;
+         border: none;
+         border-radius: 50%;
+         font-size: 20px; /* Increased font size for visibility */
+         font-weight: bold;
+         text-align: center;
+         line-height: 40px; /* Center text vertically */
+         cursor: pointer;
+         z-index: 20;
+         transition: background-color 0.3s ease;
+      }
+
+      /* Hover effect to make it more noticeable */
+      .toggle-button:hover {
+         background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      /* Styling for the dropdown menu */
+      .select {
+         position: absolute;
+         top: 50px; /* Adjusted to provide spacing */
+         left: 10px;
+         z-index: 10;
+         display: none; /* Initially hidden */
+         background-color: rgba(255, 255, 255, 0.9);
+         padding: 10px;
+         border-radius: 5px;
+         box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Select box styling */
+      select {
+         padding: 5px;
+         font-size: 14px;
+         border-radius: 3px;
+         border: 1px solid #ccc;
+      }
+
+      /* Watermark styling */
+      .watermark {
+         position: absolute;
+         bottom: 10px;
+         right: 10px;
+         font-size: 12px;
+         color: rgba(255, 255, 255, 0.7);
+         background-color: rgba(0, 0, 0, 0.5);
+         padding: 5px;
+         border-radius: 3px;
+         z-index: 30;
+         cursor: pointer;
+      }
+   </style>
+</head>
+<body>
+
+   <!-- Larger, noticeable toggle button -->
+   <button class="toggle-button" onclick="toggleSelect()">≡</button>
+
+   <!-- Dropdown menu -->
+   <div class="select" id="dropdown">
+      <select id="server" onchange="onChange(this)">
+        {ddcode}
+      </select>
+   </div>
+
+   <!-- iFrame -->
+   <iframe src="{streamurl}" id="frame" allowfullscreen></iframe>
+
+   <!-- Watermark -->
+   <div class="watermark" onclick="window.location.href='https://streamfr.onrender.com'">
+      Stream FR
+   </div>
+
+   <script>
+      function onChange(obj) {
+         const video = document.getElementById("frame");
+         video.src = obj.value;
+      }
+
+      function toggleSelect() {
+         const selectElement = document.getElementById("dropdown");
+         selectElement.style.display = (selectElement.style.display === "none" || !selectElement.style.display) ? "block" : "none";
+      }
+   </script>
+
+</body>
+</html>
