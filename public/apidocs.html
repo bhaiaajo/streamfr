@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream FR Player Documentation</title>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oculg00e5e");
+     </script>
+     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #1e1e1e, #2a2a2a);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            height: 100vh;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .container:hover {
+            transform: scale(1.01);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        iframe:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            transform: scale(1.02);
+        }
+
+        .input-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-container input, .input-container select {
+            width: 70%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        .input-container input:focus, .input-container select:focus {
+            outline: none;
+            border: 2px solid #007bff;
+        }
+
+        .input-container button {
+            width: 25%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .input-container button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .documentation, .statistics, .about {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .documentation h2, .statistics h2, .about h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .documentation pre {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .notes {
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-title {
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Stream FR Player</h1>
+    
+    <iframe id="player" src="" allowfullscreen></iframe>
+    
+    <div class="input-container">
+        <input type="text" id="tmdbid" placeholder="Enter TMDB ID" />
+        <select id="type">
+            <option value="movie">Movie</option>
+            <option value="series">TV Series</option>
+        </select>
+        <button onclick="loadPlayer()">Play</button>
+    </div>
+    
+    <div class="documentation">
+        <h2>API Documentation</h2>
+        <h3>Overview</h3>
+        <p>The Stream FR Player API allows clients to play movies or TV shows through an iframe URL.</p>
+        
+        <h3>Base URL</h3>
+        <pre>https://streamfr.onrender.com/api/player</pre>
+        
+        <h3>Endpoint</h3>
+        <pre>GET /api/player/{tmdbid}</pre>
+        
+        <h3>Parameters</h3>
+        <ul>
+            <li><strong>tmdbid</strong> (path parameter): The unique identifier for the movie or TV show from TMDB.</li>
+            <li><strong>series</strong> (optional query parameter): Set to <code>1</code> if the content is a TV series.</li>
+        </ul>
+        
+        <h3>Request Examples</h3>
+        <p><strong>For a Movie:</strong></p>
+        <pre>GET https://streamfr.onrender.com/api/player/12345</pre>
+        <p><strong>For a TV Series:</strong></p>
+        <pre>GET https://streamfr.onrender.com/api/player/67890?series=1</pre>
+        
+        <div class="notes">
+            <h3>Notes</h3>
+            <p>There is a three-line menu button in the iframe that allows you to select multiple source options.</p>
+            <p>We boast a wide array of sources for movies, ensuring an extensive selection. However, please note that the variety of sources for TV shows may be somewhat limited.</p>
+        </div>
+    </div>
+
+    <div class="statistics">
+        <h2>Statistics</h2>
+        <div class="stat">
+            <span class="stat-title">Total Users (Weekly):</span>
+            <span>1000+</span>
+        </div>
+        <div class="stat">
+            <span class="stat-title">Movies Available:</span>
+            <span>A vast collection, updated almost daily</span>
+        </div>
+        <div class="stat">
+            <span class="stat-title">TV Shows Available:</span>
+            <span>A growing library, added frequently</span>
+        </div>
+        <div class="stat">
+            <span class="stat-title">Average Watch Time:</span>
+            <span>3 hours/day</span>
+        </div>
+    </div>
+
+    <div class="about">
+        <h2>About Stream FR</h2>
+        <p>Stream FR is an innovative streaming platform that aggregates a wide array of movies and TV shows from numerous sources. Our API provides seamless integration for developers looking to incorporate a rich media experience into their applications.</p>
+        <h3>Why Choose Our API?</h3>
+        <ul>
+            <li><strong>Extensive Source Options:</strong> Our platform boasts access to a larger number of sources, ensuring a diverse viewing experience.</li>
+            <li><strong>Up-to-Date Content:</strong> We consistently update our database with the latest releases, so your audience always has access to fresh content.</li>
+            <li><strong>Easy Integration:</strong> Our API is designed for simplicity, allowing for quick integration with your existing applications.</li>
+            <li><strong>Robust Performance:</strong> With a focus on speed and reliability, our API delivers a smooth streaming experience for your users.</li>
+            <li><strong>Detailed Documentation:</strong> Our API comes with comprehensive documentation, making it easier for developers to understand and implement.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function loadPlayer() {
+        const tmdbid = document.getElementById('tmdbid').value;
+        const type = document.getElementById('type').value;
+        const url = `https://streamfr.onrender.com/api/player/${tmdbid}${type === 'series' ? '?series=1' : ''}`;
+        
+        document.getElementById('player').src = url;
+    }
+</script>
+
+<footer>
+    2024 Stream FR
+</footer>
+
+</body>
+</html>
