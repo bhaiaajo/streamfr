@@ -122,5 +122,39 @@ app.get("/api/keyword/:id", (req,res)=>{
     utils.keyword(req.params.id).then(x =>{
 res.send(x)})
 })
+app.get("/api/player/:id", async(req, res) =>{
+    if(!req.params.id) return res.send({error: "Missing ID"})
+        let sources = "";
+        let imdb = "";
+        let type = ""
+        if(req.query.series === "1"){
+            imdb = (await utils.tmdbtoimdb(req.params.id, "tv"))
+            type ="tv"
+            sources = utils.idToSource(imdb.id,req.params.id,"tv")
+        }else{
+            imdb = (await utils.tmdbtoimdb(req.params.id, "movie"))
+            type ="movie"
+            sources = utils.idToSource(imdb.id,req.params.id,"movie")
+        }
+        const fs = require("fs")
+        const file = fs.readFileSync("./public/player.html", "utf-8")
+        const sourceName = Object.keys(sources)
+        const sourceURL = Object.values(sources)
+        let i = 0
+        let txt = ""
+        while(i !== sourceName.length){
+            txt += `<option value="${sourceURL[i]}">${sourceName[i]}</option>\n`
+            i++
+        }
+    
+        const re = file.replace(/{id}/g, imdb.id).replace(/{streamurl}/g, sources["vidsrc.me"]).replace(/{ddcode}/g, txt).replace(/{name}/g, imdb.title)
+    
+        res.setHeader("Content-Type", "text/html")
+        res.send(re)
+})
+
+app.get("/docs", (req, res) =>{
+    res.sendFile(__dirname + "/apidocs.html")
+})
 
 app.listen(8080)
