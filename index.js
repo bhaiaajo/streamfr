@@ -157,4 +157,11 @@ app.get("/docs", (req, res) =>{
     res.sendFile(__dirname + "/public/apidocs.html")
 })
 
+app.get("/1138894.txt", (req, res) =>{
+    res.setHeader("Content-Type", "text/txt")
+    res.send("1138894")
+})
+
+app.listen(8080)
+
 app.listen(8080)
