@@ -162,6 +162,9 @@ app.get("/1138894.txt", (req, res) =>{
     res.send("1138894")
 })
 
-app.listen(8080)
+app.get("/1269518.sw.js", (req,res)=>{
+      res.setHeader("Content-Type", "text/javascript")
+        res.send("self.opts = {zoneID: 1269518,swDomain: "push-sdk.com",}\nimportScripts('https://push-sdk.com/f/sw.js')")  
+})
 
 app.listen(8080)
