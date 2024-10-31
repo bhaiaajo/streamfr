@@ -367,6 +367,7 @@
         async function loadContinueWatching() {
             const continueWatchingSlider = document.getElementById("continue-watching-slider");
             const continueWatching = JSON.parse(localStorage.getItem("continue") || "[]").reverse();  
+            if(continueWatching?.length === 0) return;
             const cw = document.getElementsByClassName("cw")[0]
             cw.className = "movie-section"
             continueWatchingSlider.innerHTML = continueWatching.map(movie =>
