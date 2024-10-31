@@ -264,7 +264,7 @@ app.get("/1269518.sw.js", (req,res)=>{
 app.use((req, res) => res.status(404).sendFile(__dirname + "/public/404.html"));
 
 // Start Server
-app.listen(PORT, () => {
+app.listen(8080, () => {
         (`Server running on port ${PORT}`);
 });
 
