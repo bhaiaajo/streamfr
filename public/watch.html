@@ -5,270 +5,333 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>{name} - {id} - stream fr</title>
       <link rel="stylesheet" href="/css/play.css">
-      <script type="text/javascript">
-         (function(c,l,a,r,i,t,y){
-             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-         })(window, document, "clarity", "script", "oculg00e5e");
+      <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
+      <script>
+        window.onload = () =>{
+          
+      const modal = document.getElementById("movie-modal");
+      const closeModal = document.querySelector(".close");
+  
+      closeModal.onclick = () => {
+          modal.style.display = "none";
+      };
+            document.getElementById("submit").onclick = () =>{
+                if(!document.getElementById("search").value) return alert("Please enter a search term")
+                window.location.href = "/search?q=" + document.getElementById("search").value
+            }
+  
+            document.addEventListener("keypress", (e) =>{
+                if(e.keyCode === 13){
+                    const searchTerm = document.getElementById("search").value
+                    if(!searchTerm) return alert("Please enter a search term")
+                    window.open("/search?q="+ searchTerm)
+                    document.getElementById("search").value = ""
+                    window.location.href = "/search?q=" + document.getElementById("search").value
+                }
+            })
+        }
+  
+        function handleCardClick(movieId, type) {
+          if(type === "movie"){
+              showMovieDetails(movieId, `/play/${movieId}${type === "tv" ? "?series=1" : ""}`);
+          }else{
+              showTVDetails(movieId, `/play/${movieId}${type === "tv" ? "?series=1" : ""}`)
+          }
+  }
+  async function showMovieDetails(movieId, url) {
+          const modal = document.getElementById("movie-modal");
+          const movieDetailsContainer = document.getElementById("movie-details");
+  
+          try {
+              const response = await fetch(`/api/movie/${movieId}`);
+              const movie = await response.json();
+  
+              movieDetailsContainer.innerHTML = `
+                  <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
+                  <h2>${movie.title}</h2>
+                  <p><strong>Rating:</strong> ${movie.vote_average} / 10</p>
+                  <p>${movie.overview}</p>
+                  <a href="${url}" class="play-button">Watch Now</a>
+              `;
+  
+              modal.style.display = "flex";       
+          } catch (error) {
+              console.error("Failed to load movie details:", error);
+          }
+      }
+      async function showTVDetails(movieId, url) {
+          const modal = document.getElementById("movie-modal");
+          const movieDetailsContainer = document.getElementById("movie-details");
+  
+          try {
+              const response = await fetch(`/api/tv/${movieId}`);
+              const movie = await response.json();
+  
+              movieDetailsContainer.innerHTML = `
+                  <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.name}">
+                  <h2>${movie.name}</h2>
+                  <p><strong>Rating:</strong> ${movie.vote_average} / 10</p>
+                  <p>${movie.overview}</p>
+                  <a href="${url}" class="play-button">Watch Now</a>
+              `;
+  
+              modal.style.display = "flex";       
+          } catch (error) {
+              console.error("Failed to load movie details:", error);
+          }
+      }
+  
+      window.onclick = (event) => {
+          if (event.target === modal) {
+              modal.style.display = "none";
+          }
+      };
       </script>
+      <style>
+        body {
+    background-color: #121212; /* Dark background for better contrast */
+    color: #ffffff; /* White text for readability */
+    font-family: Arial, sans-serif; /* Consistent font */
+    margin: 0;
+    padding: 0;
+}
+
+
+.navbar {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space between logo, links, and search */
+    background-color: #282c34; /* Dark background */
+    padding: 10px 20px; /* Padding for spacing */
+}
+
+.logo {
+    color: #61dafb; /* Logo color */
+    font-size: 1.5rem; /* Logo font size */
+    font-weight: bold; /* Make logo bold */
+}
+
+/* Navbar Links */
+.navbar-links {
+    display: flex; /* Use flexbox for alignment */
+    gap: 20px; /* Space between links */
+}
+
+.navbar-links a {
+    color: white; /* Link color */
+    text-decoration: none; /* No underline */
+    font-size: 1rem; /* Font size */
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+.navbar-links a:hover {
+    color: #61dafb; /* Link hover color */
+}
+
+/* Search Container Styles */
+.search-container {
+    display: flex; /* Use flexbox to align input and button */
+    align-items: center; /* Center items vertically */
+}
+
+#search-bar {
+    padding: 8px; /* Padding for input */
+    border: 1px solid #ccc; /* Border for input */
+    border-radius: 5px; /* Rounded corners */
+    margin-right: 10px; /* Space between input and button */
+    width: 200px; /* Set width for the input */
+}
+
+.submit {
+    padding: 8px 12px; /* Padding for button */
+    background-color: #61dafb; /* Button color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    color: black; /* Button text color */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: flex-start; /* Align items to the left */
+    }
+
+    .navbar-links {
+        flex-direction: row; /* Keep links in a row */
+        justify-content: flex-start; /* Align links to the start */
+        width: 100%; /* Full width for links */
+        margin: 10px 0; /* Margin for spacing */
+    }
+
+    .search-container {
+        width: 100%; /* Full width for search container */
+        justify-content: flex-start; /* Align to the start */
+    }
+
+    #search-bar {
+        width: 100%; /* Full width for input on mobile */
+    }
+}
+
+.select {
+    margin: 20px;
+}
+
+.styled-select {
+    padding: 10px;
+    border: 2px solid #12b3f3; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #2c2c2c; /* Dark background for select */
+    color: #ffffff; /* White text for select */
+    width: 300px; /* Width of the select dropdown */
+}
+
+.styled-select option {
+    background-color: #2c2c2c; /* Dark background for options */
+    color: #ffffff; /* White text for options */
+}
+
+.infobox {
+    display: flex;
+    align-items: center;
+    margin: 20px;
+}
+
+.infobox img {
+    width: 200px; /* Image width */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 20px; /* Space between image and text */
+}
+
+.source-title, .similar-title {
+    color:#12b3f3;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin: 20px;
+}
+
+.result {
+    display: inline-block;
+    padding-top: 20px;
+    font-family: sans-serif;
+    width: 200px; /* Set a fixed width for consistency */
+    text-align: center; /* Center align text */
+    cursor: pointer; /* Indicate that it's clickable */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add transition effects */
+}
+
+.result:hover {
+    transform: scale(1.05); /* Slightly enlarge the card on hover */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Add a glow effect */
+}
+
+.results img {
+    width: 100%; /* Make the image fill the card */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px; /* Add rounded corners to images */
+}
+
+.results p {
+    font-size: 14px; /* Adjust font size for better readability */
+    margin: 5px 0; /* Add some spacing */
+    color: white; /* Ensure text is readable */
+    transition: color 0.2s ease; /* Smooth text color change */
+}
+
+.result:hover p {
+    color: darkturquoise; /* Change text color on hover */
+}
+
+      </style>
       <script async type="text/javascript" src="https://s0-greate.net/p/1269519"></script>
       <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
-      <script type='text/javascript' src='https://pl22991898.cpmrevenuegate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
-      <script async data-cfasync="false">
-  (function() {
-      const url = new URL(window.location.href);
-      const clickID = url.searchParams.get("click_id");
-      const sourceID = url.searchParams.get("source_id");
+      <script>
+        window.onload = () => {
+            fetch(`/api/similar/{tmdbid}/{type}`)
+                .then(g => g.json())
+                .then(y => {
+                    const addDiv = document.getElementById("image");
+                    y.results.forEach(x => {
+                        const img = document.createElement("img");
+                        img.src = `https://image.tmdb.org/t/p/original${x.poster_path}`;
+                        const anchor = document.createElement("a");
+                        anchor.href = `/play/${x.id}{q}`;
+                        anchor.className = "result"
+                        anchor.appendChild(img);
+                        addDiv.appendChild(anchor);
+                    });
+                });
 
-      const s = document.createElement("script");
-      s.dataset.cfasync = "false";
-      s.src = "https://push-sdk.com/f/sdk.js?z=1269518";
-      s.onload = (opts) => {
-          opts.zoneID = 1269518;
-          opts.extClickID = clickID;
-          opts.subID1 = sourceID;
-          opts.actions.onPermissionGranted = () => {};
-          opts.actions.onPermissionDenied = () => {};
-          opts.actions.onAlreadySubscribed = () => {};
-          opts.actions.onError = () => {};
-      };
-      document.head.appendChild(s);
-  })()
-</script>
-      <script>
-         /*
-        // Function to fetch ad patterns from EasyList, Badware List, and uBlock filters
-        async function fetchAdPatterns() {
-          try {
-            // Fetch EasyList
-            const easyListResponse = await fetch('https://easylist.to/easylist/easylist.txt');
-            const easyListData = await easyListResponse.text();
-            const easyListPatterns = easyListData.match(/(?:\|\|)([^\^]+)\^/g) || [];
-        
-            // Fetch Badware List
-            const badwareListResponse = await fetch('https://github.com/uBlockOrigin/uAssets/raw/refs/heads/master/filters/badware.txt');
-            const badwareListData = await badwareListResponse.text();
-            const badwarePatterns = badwareListData.match(/(?:\|\|)([^\^]+)\^/g) || [];
-        
-            // Fetch uBlock Filters
-            const uBlockListResponse = await fetch('https://github.com/uBlockOrigin/uAssets/raw/refs/heads/master/filters/filters.txt');
-            const uBlockListData = await uBlockListResponse.text();
-            const uBlockPatterns = uBlockListData.match(/\/\^[^$]+\/\$document/g) || [];
-        
-            // Combine and convert patterns into regular expressions
-            const combinedPatterns = [...easyListPatterns, ...badwarePatterns, ...uBlockPatterns];
-            return combinedPatterns.map(pattern => {
-              // Handle complex regex patterns
-              if (pattern.startsWith('/')) {
-                return new RegExp(pattern.slice(1, -10).replace(/\^/g, '').replace(/\\/g, ''));
-              }
-              // Handle basic domain blocking patterns
-              return new RegExp(pattern.replace(/\|\|/, '').replace(/\^/, ''));
-            });
-          } catch (error) {
-            console.error('Error fetching ad blocklists:', error);
-            return [];
-          }
-        }
-        
-        // Match the URL against all combined regex patterns
-        function isAdRedirect(url, regexPatterns) {
-          return regexPatterns.some(regex => regex.test(url));
-        }
-        
-        // Block iframe redirects by intercepting navigation attempts inside the iframe
-        function preventIframeRedirects(regexPatterns) {
-          const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-              mutation.addedNodes.forEach(node => {
-                if (node.tagName === 'IFRAME') {
-                  node.onload = () => {
-                    try {
-                      const iframeSrc = node.contentWindow.location.href;
-                      if (isAdRedirect(iframeSrc, regexPatterns)) {
-                        console.log('Blocked iframe redirect:', iframeSrc);
-                        node.contentWindow.location.href = 'about:blank'; // Block the redirect
-                      }
-                    } catch (error) {
-                      console.error('Error blocking iframe redirect:', error);
-                    }
-                  };
+            let cw = localStorage.getItem("continue") || localStorage.setItem("continue", "[]");
+            try {
+                cw = JSON.parse(cw) || [];
+            } catch {
+                cw = JSON.parse(cw);
+            }
+            cw.push({name: "{name}", src: "{imgurl}", id: "{tmdbid}", href: window.location.href, type: "{type}"});
+            const s = cw.reverse().filter((value, index, self) =>
+                index === self.findIndex((t) => (t.place === value.place && t.name === value.name))
+            );
+            localStorage.setItem("continue", JSON.stringify(s.reverse()));
+
+            document.getElementById("submit").onclick = () => {
+                if (!document.getElementById("search").value) return alert("Please enter a search term");
+                window.location.href = "/search?q=" + document.getElementById("search").value;
+            };
+
+            document.addEventListener("keypress", (e) => {
+                if (e.keyCode === 13) {
+                    const searchTerm = document.getElementById("search").value;
+                    if (!searchTerm) return alert("Please enter a search term");
+                    window.location.href = "/search?q=" + searchTerm;
                 }
-              });
             });
-          });
-        
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-          });
         }
-        
-        // Aggressively block window location redirects
-        function preventPageRedirects(regexPatterns) {
-          // Override location.assign and location.replace
-          const originalLocationAssign = window.location.assign;
-          window.location.assign = function(url) {
-            if (isAdRedirect(url, regexPatterns)) {
-              console.log('Blocked redirect attempt to:', url);
-            } else {
-              originalLocationAssign.call(window.location, url);
-            }
-          };
-        
-          const originalLocationReplace = window.location.replace;
-          window.location.replace = function(url) {
-            if (isAdRedirect(url, regexPatterns)) {
-              console.log('Blocked redirect attempt to:', url);
-            } else {
-              originalLocationReplace.call(window.location, url);
-            }
-          };
+
+        function onChange(obj) {
+            const video = document.getElementById("frame");
+            video.src = `${obj.value}`;
         }
-        
-        // Periodically check for iframe redirects
-        function periodicIframeCheck(regexPatterns) {
-          setInterval(() => {
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-              try {
-                const iframeSrc = iframe.contentWindow.location.href;
-                if (isAdRedirect(iframeSrc, regexPatterns)) {
-                  console.log('Blocked iframe redirect during periodic check:', iframeSrc);
-                  iframe.contentWindow.location.href = 'about:blank';
-                }
-              } catch (error) {
-                console.error('Error during iframe redirect check:', error);
-              }
-            });
-          }, 2000);
-        }
-        
-        // Fetch ad blocklists and apply blocking mechanisms
-        (async function() {
-          try {
-            const regexPatterns = await fetchAdPatterns();
-            if (regexPatterns.length > 0) {
-              preventIframeRedirects(regexPatterns);  // Block iframe redirects
-              preventPageRedirects(regexPatterns);    // Block page redirects
-              periodicIframeCheck(regexPatterns);     // Periodic iframe checking
-            } else {
-              console.error('No patterns loaded from ad blocklists.');
-            }
-          } catch (error) {
-            console.error('Error setting up ad-blocking:', error);
-          }
-        })();*/
-        </script>
-        
-        
-        <script>
-        
-         window.onload = ()=>{
-             fetch(`/api/similar/{tmdbid}/{type}`).then(g =>g.json()).then(y =>{
-             const addDiv = document.getElementById("image")
-             y.results.forEach(x=>{
-                 const img = document.createElement("img")
-                 img.src = `https://image.tmdb.org/t/p/original` +x.poster_path
-                 const anchor = document.createElement("a")
-                 anchor.href = `/play/${x.id}{q}`
-                 anchor.appendChild(img)
-                 addDiv.appendChild(anchor)
-             })
-         })
-         let cw = localStorage.getItem("continue") || localStorage.setItem("continue", "[]")
-         try {
-             cw = JSON.parse(cw) || []
-         }catch{
-             cw = JSON.parse(cw)
-         }
-         cw.push({name: "{name}", src: "{imgurl}", id: "{tmdbid}", href: window.location.href, type: "{type}"})
-         const s = cw.reverse().filter((value, index, self) =>
-         index === self.findIndex((t) => (
-         t.place === value.place && t.name === value.name
-         ))
-         )
-         localStorage.setItem("continue", JSON.stringify(s.reverse()))
-         document.getElementById("submit").onclick = () =>{
-         
-         if(!document.getElementById("search").value) return alert("Please enter a search term")
-         window.location.href = "/search?q=" + document.getElementById("search").value
-         
-         }
-         
-         document.addEventListener("keypress", (e) =>{
-         if(e.keyCode === 13){
-         const searchTerm = document.getElementById("search").value
-         
-         if(!searchTerm) return alert("Please enter a search term")
-         
-         window.open("/search?q="+ searchTerm)
-         document.getElementById("textbox").value = ""
-         window.location.href = "/search?q=" + document.getElementById("search").value
-         }
-         })
-         }
-         function onChange(obj){
-             const video = document.getElementById("frame")
-             video.src = `${obj.value}`
-         }
-      </script>
-      <script>
-         window.dataLayer = window.dataLayer || [];
-         function gtag(){dataLayer.push(arguments);}
-         gtag('js', new Date());
-         
-         gtag('config', 'G-2GSJRJYKS0');
-      </script>
-      <script type='text/javascript' src='https://pl22991898.cpmrevenuegate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
+    </script>
+      <meta property="og:title" content="stream fr" />
+      <meta property="og:type" content="website"/>
+      <meta property="og:url" content="https://streamfr.onrender.com/play/{id}" />
+      <meta property="og:description" content="Watch {name} for free on stream fr" />
+      <meta name="title" content="{name} - {id} - stream fr">
+      <meta name="description" content="Watch {name} for free on stream fr.">
+      <meta property="og:image" content="{imgurl}" />
    </head>
-   <meta property="og:title" content="stream fr" />
-   <meta property="og:type" content="website"/>
-   <meta property="og:url" content="https://streamfr.onrender.com/play/{id}" />
-   <meta property="og:description" content="Watch {name} for free on stream fr" />
-   <meta name="title" content="{name} - {id} - stream fr">
-   <meta name="description" content="Watch {name} for free on stream fr.
-      {text}
-      ">
-   <meta property="og:image" content="{imgurl}" />
    <body>
-      <div class="topnav">
-         <h1 style="color: white;float: left; font-size: 25px; margin-right: 15px; margin-left: 15px;font-family: Arial, Helvetica, sans-serif;">stream fr</h1>
-         <a href="/">Home</a>
-         <a href="/docs">API</a>
-         <a href="https://github.com/bhaiaajo">Github</a>
-         <a href="https://discord.com/invite/bqXhREHEDt">Discord</a>
-      </div>
-      <center>
-         <div class="search">
-            <input type="text" placeholder="Search Movies/Shows" id="search" class="searchbar">
-            <button id="submit" class="submit">🔍</button>
-         </div>
-      </center>
-      <h1 style="color: white; font-family: 'Courier New', Courier, monospace;">
-         Sources (Change if not working or for languages): 
-      </h1>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Stream FR</div>
+            <div class="navbar-links" style="margin-left: 20px;">
+                <a href="/">Home</a>
+                <a href="/docs">API</a>
+                <a href="https://github.com/bhaiaajo/streamfr">GitHub</a>
+                <a href="https://discord.com/invite/bqXhREHEDt">Discord</a>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search movies...">
+                <button class="submit" id="submit">🔎</button>
+            </div>
+        </nav>
+    </header>
+      <h1 class="source-title">Sources (Change if not working or for languages): </h1>
       <div class="select">
-         <select id="server" onchange="onChange(this)">
-         {ddcode}
+         <select id="server" onchange="onChange(this)" class="styled-select">
+            {ddcode}
          </select>
       </div>
-      <iframe src="{streamurl}" frameborder="0" allowfullscreen style="width: 100%;height:700px;" id="frame">
-      </iframe>
+      <iframe src="{streamurl}" frameborder="0" allowfullscreen style="width: 100%; height: 700px;" id="frame"></iframe>
       <div class="infobox">
          <img src="{imgurl}" alt="Image">
-         <p>{text}</p>
+         {text}
       </div>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <div class="similar" id="similar" style="display: block;margin-left: 20px;">
-         <h1 style="color: whitesmoke;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Similar movies/shows to watch</h1>
-         <div id="image" class="image">
-         </div>
+      <div class="similar" id="similar" style="display: block; margin-left: 20px;">
+         <h1 class="similar-title">Similar movies/shows to watch</h1>
+         <div id="image" class="results"></div>
       </div>
    </body>
 </html>
