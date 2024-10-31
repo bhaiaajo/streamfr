@@ -207,7 +207,7 @@ app.get("/api/tv/:tvId", async (req, res) => {
 });
 
 app.get("/dmca", (req,res) => res.sendFile(__dirname + "/public/dmca.html"))
-app.get('/docs', (req,res) => res.sendFile(__dirname + "/public/docs.html"))
+app.get('/docs', (req,res) => res.sendFile(__dirname + "/public/apidocs.html"))
 
 app.get("/api/player/:id", async (req, res) => {
     const { id } = req.params;
