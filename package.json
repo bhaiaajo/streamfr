@@ -1,6 +1,18 @@
 {
-  "dependencies": {
-    "express": "^4.18.3",
-    "node-fetch": "^2.7.0"
-  }
+    "name": "stream-fr",
+    "version": "1.0.0",
+    "description": "Backend server for Stream FR to fetch movie and TV show data from TMDB with caching, rate limiting, and basic error handling.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+    },
+    "author": "agenthacker",
+    "license": "EPL-2.0",
+    "dependencies": {
+        "express": "^4.18.2",
+        "express-rate-limit": "^6.5.1",
+        "morgan": "^1.10.0",
+        "node-cache": "^5.1.2",
+        "node-fetch": "^2.7.0"
+    }
 }
