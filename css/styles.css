@@ -1,0 +1,283 @@
+/* Basic Reset */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /*overflow-x: hidden;*/
+    background-color: #121212;
+    color: #ffffff;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.navbar .logo {
+    font-size: 1.5em;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #252323;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 300px;
+    margin-left: auto;  
+}
+
+/* Slideshow */
+.slideshow-container {
+    position: relative;
+    overflow: hidden;
+    height: 500px;
+}
+
+.slideshow {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+}
+
+.slide {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.slide-info {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 90%;
+}
+
+/* Movie Section */
+.movie-section {
+    padding: 20px;
+}
+
+
+.movie-card img {
+    width: 100%;
+    height: auto;
+}
+
+.watch-button, .play-button {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 8px 12px;
+    background-color: #61dafb;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #2e2e2e;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    margin: auto;
+    color: #ffffff;
+}
+
+.close {
+    cursor: pointer;
+    font-size: 20px;
+    color: #ff5722;
+    float: right;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .logo {
+        font-size: 1.2em;
+    }
+
+    /* Adjust Search Bar */
+    .search-container {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 10px;
+        padding: 5px 10px;
+    }
+
+    #search-bar {
+        width: 80%;
+        font-size: 1em;
+    }
+
+    .submit {
+        font-size: 1em;
+        padding: 8px;
+    }
+
+    /* Slideshow */
+    .slideshow-container {
+        height: 250px;
+    }
+
+    /* Movie Section */
+    .movie-list {   
+        gap: 5px;
+    }
+
+    .movie-card {
+        width: 120px;
+    }
+
+    .movie-section h2 {
+        font-size: 1.4em;
+    }
+
+    .slide-info {
+        font-size: 0.9em;
+        bottom: 15px;
+        left: 15px;
+        max-width: 80%;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 90%;
+        max-width: 90%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 10px;
+    }
+
+    .logo {
+        font-size: 1em;
+    }
+
+    /* Search Bar */
+    .search-container {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        padding: 0;
+    }
+
+    /* Adjusting movie card size */
+    .movie-card {
+        width: 100px;
+    }
+
+    .movie-section h2 {
+        font-size: 1.2em;
+    }
+    
+    /* Modal */
+    .modal-content {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+}
+
+.modal-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}   
+.movie-list {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    overflow: visible; /* Ensure overflow visibility for the entire row */
+}
+
+.movie-card {
+    flex: 0 0 auto;
+    width: 150px;
+    margin-right: 15px;
+    text-align: center;
+    background-color: #333;
+    border-radius: 5px;
+    color: #ffffff;
+    overflow: visible; /* Allow content to expand */
+    position: relative;
+    transition: transform 0.3s ease-in-out;
+    transform-origin: center; /* Scale from center without shifting */
+}
+
+.movie-card:hover {
+    transform: scale(1.1); /* Scale slightly to avoid clipping */
+    z-index: 1; /* Place above surrounding elements on hover */
+}
+
+/* Scrollbar Styling for Webkit Browsers */
+::-webkit-scrollbar {
+    width: 12px; /* Width for vertical scrollbar */
+    height: 12px; /* Height for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #61dafb, #21a0f6); /* Gradient effect */
+    border-radius: 10px;
+    border: 2px solid #1e1e1e; /* Matches background */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #21a0f6, #1b82d1); /* Darker gradient on hover */
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e; /* Dark background for the track */
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+/* Firefox Scrollbar Styling */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #61dafb #1e1e1e;
+}
+
+/* Customizations */
+.cw {
+    display: none;
+}
