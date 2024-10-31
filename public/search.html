@@ -8,81 +8,112 @@
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script>
       window.onload = () =>{
-  document.getElementById("submit").onclick = () =>{
+        
+    const modal = document.getElementById("movie-modal");
+    const closeModal = document.querySelector(".close");
 
-      if(!document.getElementById("search").value) return alert("Please enter a search term")
-      window.location.href = "/search?q=" + document.getElementById("search").value
+    closeModal.onclick = () => {
+        modal.style.display = "none";
+    };
+          document.getElementById("submit").onclick = () =>{
+              if(!document.getElementById("search").value) return alert("Please enter a search term")
+              window.location.href = "/search?q=" + document.getElementById("search").value
+          }
 
-  }
-
-  document.addEventListener("keypress", (e) =>{
-      if(e.keyCode === 13){
-          const searchTerm = document.getElementById("search").value
-  
-          if(!searchTerm) return alert("Please enter a search term")
-  
-          window.open("/search?q="+ searchTerm)
-          document.getElementById("textbox").value = ""
-          window.location.href = "/search?q=" + document.getElementById("search").value
+          document.addEventListener("keypress", (e) =>{
+              if(e.keyCode === 13){
+                  const searchTerm = document.getElementById("search").value
+                  if(!searchTerm) return alert("Please enter a search term")
+                  window.open("/search?q="+ searchTerm)
+                  document.getElementById("search").value = ""
+                  window.location.href = "/search?q=" + document.getElementById("search").value
+              }
+          })
       }
-  })
-}
-  </script>
-    <script async type="text/javascript" src="https://s0-greate.net/p/1269519"></script>
-    <script async data-cfasync="false">
-  (function() {
-      const url = new URL(window.location.href);
-      const clickID = url.searchParams.get("click_id");
-      const sourceID = url.searchParams.get("source_id");
 
-      const s = document.createElement("script");
-      s.dataset.cfasync = "false";
-      s.src = "https://push-sdk.com/f/sdk.js?z=1269518";
-      s.onload = (opts) => {
-          opts.zoneID = 1269518;
-          opts.extClickID = clickID;
-          opts.subID1 = sourceID;
-          opts.actions.onPermissionGranted = () => {};
-          opts.actions.onPermissionDenied = () => {};
-          opts.actions.onAlreadySubscribed = () => {};
-          opts.actions.onError = () => {};
-      };
-      document.head.appendChild(s);
-  })()
-</script>
-    <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "oculg00e5e");
-</script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-    
-        gtag('config', 'G-2GSJRJYKS0');
-        </script>
-       <script type='text/javascript' src='https://pl22991898.cpmrevenuegate.com/22/97/31/2297315db84866d51a7e3632043f6ae2.js'></script>
+      function handleCardClick(movieId, type) {
+        if(type === "movie"){
+            showMovieDetails(movieId, `/play/${movieId}${type === "tv" ? "?series=1" : ""}`);
+        }else{
+            showTVDetails(movieId, `/play/${movieId}${type === "tv" ? "?series=1" : ""}`)
+        }
+}
+async function showMovieDetails(movieId, url) {
+        const modal = document.getElementById("movie-modal");
+        const movieDetailsContainer = document.getElementById("movie-details");
+
+        try {
+            const response = await fetch(`/api/movie/${movieId}`);
+            const movie = await response.json();
+
+            movieDetailsContainer.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
+                <h2>${movie.title}</h2>
+                <p><strong>Rating:</strong> ${movie.vote_average} / 10</p>
+                <p>${movie.overview}</p>
+                <a href="${url}" class="play-button">Watch Now</a>
+            `;
+
+            modal.style.display = "flex";       
+        } catch (error) {
+            console.error("Failed to load movie details:", error);
+        }
+    }
+    async function showTVDetails(movieId, url) {
+        const modal = document.getElementById("movie-modal");
+        const movieDetailsContainer = document.getElementById("movie-details");
+
+        try {
+            const response = await fetch(`/api/tv/${movieId}`);
+            const movie = await response.json();
+
+            movieDetailsContainer.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.name}">
+                <h2>${movie.name}</h2>
+                <p><strong>Rating:</strong> ${movie.vote_average} / 10</p>
+                <p>${movie.overview}</p>
+                <a href="${url}" class="play-button">Watch Now</a>
+            `;
+
+            modal.style.display = "flex";       
+        } catch (error) {
+            console.error("Failed to load movie details:", error);
+        }
+    }
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+    </script>
 </head>
 <body>
-  <div class="topnav">
-    <h1 style="color: white;float: left; font-size: 25px; margin-right: 15px; margin-left: 15px;font-family: Arial, Helvetica, sans-serif;">stream fr</h1>
-    <a href="/">Home</a>
-    <a href="/docs">API</a>
-    <a href="https://github.com/bhaiaajo">Github</a>
-    <a href="https://discord.com/invite/bqXhREHEDt">Discord</a>
+    <header>
+        <nav class="navbar">
+            <div class="logo">Stream FR</div>
+            <div class="navbar-links" style="margin-left: 20px;">
+                <a href="/">Home</a>
+                <a href="/docs">API</a>
+                <a href="https://github.com/bhaiaajo/streamfr">GitHub</a>
+                <a href="https://discord.com/invite/bqXhREHEDt">Discord</a>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search movies...">
+                <button class="submit" id="submit">🔎</button>
+            </div>
+        </nav>
+    </header>
+  <h1>Search results for {term}</h1>
+  <div class="results">
+    {code}
   </div>
-      <center>
-        <div class="search">
-            <input type="text" placeholder="Search Movies/Shows" id="search" class="searchbar">
-            <button id="submit" class="submit">🔍</button>
-        </div>
-      </center>
-      <h1>Search results for {term}</h1>
-      <div class="results">
-        {code}
-      </div>
+  <div id="movie-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="movie-details"></div>
+    </div>
+</div>
+
 </body>
 </html>
