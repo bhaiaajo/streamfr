@@ -132,7 +132,9 @@
 
       function toggleSelect() {
          const selectElement = document.getElementById("dropdown");
+         const wm = document.getElementsByClassName("watermark")[0];
          selectElement.style.display = (selectElement.style.display === "none" || !selectElement.style.display) ? "block" : "none";
+                  wm.style.display = (selectElement.style.display === "none" || !selectElement.style.display) ? "none" : "";
       }
    </script>
 
