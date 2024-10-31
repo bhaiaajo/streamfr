@@ -374,7 +374,7 @@
                 `<div class="movie-card">
                     <img src="${movie.src}" alt="${movie.name}">
                     <p>${movie.name}</p>
-                    <a href="/play/${movie.id}" class="watch-button">Continue</a>
+                    <a href="${movie.href}" class="watch-button">Continue</a>
                 </div>`).join("");
                 const byw = document.getElementById("byw")
             fetch(`/api/recommendations/${continueWatching?.[0]?.id}/${continueWatching?.[0]?.type}`).then(g=>g.json()).then(g =>{
