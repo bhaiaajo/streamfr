@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #1a1a1a, #333333);
+            color: #e0f7fa;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 6rem;
+            color: #03a9f4;
+            margin: 0;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #b0bec5;
+            margin: 20px 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            color: #ffffff;
+            background: #03a9f4;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: transform 0.3s, background 0.3s;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            transform: scale(1.1);
+            background: #0288d1;
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            color: #03a9f4;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .filmstrip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 200px;
+            background: repeating-linear-gradient(
+                #03a9f4 0 5px,
+                #1a1a1a 5px 10px
+            );
+            transform: rotate(45deg) translate(-50%, -50%);
+            opacity: 0.1;
+            animation: rotateFilm 20s linear infinite;
+            z-index: -1;
+        }
+
+        /* Animations */
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #03a9f4, 0 0 20px #03a9f4, 0 0 30px #0288d1;
+            }
+            to {
+                text-shadow: 0 0 20px #03a9f4, 0 0 40px #03a9f4, 0 0 50px #0288d1;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotateFilm {
+            from {
+                transform: rotate(45deg) translate(-50%, -50%);
+            }
+            to {
+                transform: rotate(405deg) translate(-50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="filmstrip"></div>
+        <div class="error-icon">🎥</div>
+        <h1>404</h1>
+        <p>We couldn't find the page you're looking for. It might have been removed or is temporarily unavailable.</p>
+        <a href="/" class="back-link">Return to Home</a>
+    </div>
+</body>
+</html>
