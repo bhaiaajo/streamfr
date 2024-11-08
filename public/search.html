@@ -46,17 +46,16 @@
       window.onload = () =>{
 
                     document.getElementById("submit").onclick = () =>{
-              if(!document.getElementById("search").value) return alert("Please enter a search term")
-              window.location.href = "/search?q=" + document.getElementById("search").value
+              if(!document.getElementById("search-bar").value) return alert("Please enter a search term")
+              window.location.href = "/search?q=" + document.getElementById("search-bar").value
           }
 
           document.addEventListener("keypress", (e) =>{
               if(e.keyCode === 13){
-                  const searchTerm = document.getElementById("search").value
+                  const searchTerm = document.getElementById("search-bar").value
                   if(!searchTerm) return alert("Please enter a search term")
-                  window.open("/search?q="+ searchTerm)
-                  document.getElementById("search").value = ""
-                  window.location.href = "/search?q=" + document.getElementById("search").value
+                  window.location.href = "/search?q=" + document.getElementById("search-bar").value
+                  document.getElementById("search-bar").value = ""
               }
           })
         
