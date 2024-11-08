@@ -44,14 +44,8 @@
         </script>
     <script>
       window.onload = () =>{
-        
-    const modal = document.getElementById("movie-modal");
-    const closeModal = document.querySelector(".close");
 
-    closeModal.onclick = () => {
-        modal.style.display = "none";
-    };
-          document.getElementById("submit").onclick = () =>{
+                    document.getElementById("submit").onclick = () =>{
               if(!document.getElementById("search").value) return alert("Please enter a search term")
               window.location.href = "/search?q=" + document.getElementById("search").value
           }
@@ -65,6 +59,13 @@
                   window.location.href = "/search?q=" + document.getElementById("search").value
               }
           })
+        
+    const modal = document.getElementById("movie-modal");
+    const closeModal = document.querySelector(".close");
+
+    closeModal.onclick = () => {
+        modal.style.display = "none";
+    };
       }
 
       function handleCardClick(movieId, type) {
