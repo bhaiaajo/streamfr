@@ -130,7 +130,6 @@ app.get("/search", async (req, res) => {
         if (!data?.results) return handleError(res, "No results found", 404);
 
         const file = fs.readFileSync("./public/search.html", "utf-8");
-        console.log(data)
         const searchContent = data.results.map(x =>
             `
 <div class="result" onclick="handleCardClick('${x.id}', '${x.media_type === "tv" ? "tv" : "movie"}')">
@@ -270,7 +269,6 @@ app.listen(8080, () => {
 
 // Helper Functions
 function formatDetails(imdb) {
-    console.log(imdb)
     return `<h2>${imdb.title}&nbsp</h2> <br>${imdb.year}, ${imdb.rating?.star} ⭐<br>${secondsToHms(imdb.runtimeSeconds)}<br>${imdb.spokenLanguages?.map(x => x.language).join(", ")}<br>${imdb.genre?.join(", ")}<br>Director(s): ${imdb.directors?.join(", ")}<br>Actors: ${imdb.actors?.join(", ")}<br><br>${imdb.plot}`;
 }
 
