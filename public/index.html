@@ -14,6 +14,21 @@
     <title>stream fr</title>
     <link rel="stylesheet" href="/css/styles.css">
         <script>
+                    window.onload = () =>{
+            document.getElementById("submit").onclick = () =>{
+              if(!document.getElementById("search-bar").value) return alert("Please enter a search term")
+              window.location.href = "/search?q=" + document.getElementById("search-bar").value
+          }
+
+          document.addEventListener("keypress", (e) =>{
+              if(e.keyCode === 13){
+                  const searchTerm = document.getElementById("search-bar").value
+                  if(!searchTerm) return alert("Please enter a search term")
+                  window.location.href = "/search?q=" + document.getElementById("search-bar").value
+                  document.getElementById("search-bar").value = ""
+              }
+          })
+        }
         document.addEventListener("DOMContentLoaded", () => {
             loadContinueWatching();
             loadTrendingMovies();
@@ -258,21 +273,6 @@
                 modal.style.display = "none";
             }
         };
-        window.onload = () =>{
-            document.getElementById("submit").onclick = () =>{
-              if(!document.getElementById("search-bar").value) return alert("Please enter a search term")
-              window.location.href = "/search?q=" + document.getElementById("search-bar").value
-          }
-
-          document.addEventListener("keypress", (e) =>{
-              if(e.keyCode === 13){
-                  const searchTerm = document.getElementById("search-bar").value
-                  if(!searchTerm) return alert("Please enter a search term")
-                  window.location.href = "/search?q=" + document.getElementById("search-bar").value
-                  document.getElementById("search-bar").value = ""
-              }
-          })
-        }
     </script>
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script async type="text/javascript" src="https://s0-greate.net/p/1269519"></script>
