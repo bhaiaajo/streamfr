@@ -13,6 +13,267 @@
         ">
     <title>stream fr</title>
     <link rel="stylesheet" href="/css/styles.css">
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadContinueWatching();
+            loadTrendingMovies();
+            loadDiscoverMovies();
+            loadTrendingTV()
+            initializeSlideshow();
+            showList("110121", "tv", "TV Show")
+            showList("634", "movie", "Top IMDB")
+            showList("12565", "movie", "Psychological Thriller")
+            showList("3945", "movie", "Sci Fi List by WardenclyffeTower")
+            showList("5729", "movie", "10 By godfather10")
+            //showKeyword("   ")
+        });
+
+        async function showList(id, type, title){
+            const section = document.createElement("section");
+            section.className = "movie-section"
+            const h2 = document.createElement("h2")
+            h2.innerText = title
+            const container = document.createElement("div")
+            container.className = "movie-list"  
+            fetch(`/api/list/${id}`).then(r => r.json(  )).then(got => {
+            if(type === "tv"){
+                container.innerHTML = got.map(movie =>
+                `<div class="movie-card" onclick="showTVDetails(${movie.id})">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.name}">
+                    <p>${movie.name}</p>
+                    <a href="javascript:void(0);" class="watch-button">View Details</a>
+                </div>`).join("");
+            }else{
+                container.innerHTML = got.map(movie =>
+                `<div class="movie-card" onclick="showMovieDetails(${movie.id})">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
+                    <p>${movie.title}</p>
+                    <a href="javascript:void(0);" class="watch-button">View Details</a>
+                </div>`).join("");
+            }
+        }).finally(x =>{
+            section.appendChild(h2)
+            section.appendChild(container)
+            const main = document.getElementsByTagName("main")[0]
+            main.appendChild(section)
+            
+        })
+        }
+        async function showKeyword(id, type, title){
+            const section = document.createElement("section");
+            section.className = "movie-section"
+            const h2 = document.createElement("h2")
+            h2.innerText = title
+            const container = document.createElement("div")
+            container.className = "movie-list"  
+            fetch(`/api/keyword/${id}`).then(r => r.json()).then(got => {
+            if(type === "tv"){
+                container.innerHTML = got.map(movie =>
+                `<div class="movie-card" onclick="showTVDetails(${movie.id})">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.name}">
+                    <p>${movie.name}</p>
+                    <a href="javascript:void(0);" class="watch-button">View Details</a>
+                </div>`).join("");
+            }else{
+                container.innerHTML = got.map(movie =>
+                `<div class="movie-card" onclick="showMovieDetails(${movie.id})">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
+                    <p>${movie.title}</p>
+                    <a href="javascript:void(0);" class="watch-button">View Details</a>
+                </div>`).join("");
+            }
+        }).finally(x =>{
+            section.appendChild(h2)
+            section.appendChild(container)
+            const main = document.getElementsByTagName("main")[0]
+            main.appendChild(section)
+            
+        })
+        }
+
+        async function loadContinueWatching() {
+            const continueWatchingSlider = document.getElementById("continue-watching-slider");
+            const continueWatching = JSON.parse(localStorage.getItem("continue") || "[]").reverse();  
+            if(continueWatching?.length === 0) return;
+            const cw = document.getElementsByClassName("cw")[0]
+            cw.className = "movie-section"
+            continueWatchingSlider.innerHTML = continueWatching.map(movie =>
+                `<div class="movie-card">
+                    <img src="${movie.src}" alt="${movie.name}">
+                    <p>${movie.name}</p>
+                    <a href="${movie.href}" class="watch-button">Continue</a>
+                </div>`).join("");
+                const byw = document.getElementById("byw")
+            fetch(`/api/recommendations/${continueWatching?.[0]?.id}/${continueWatching?.[0]?.type}`).then(g=>g.json()).then(g =>{
+                console.log(g)
+                byw.innerHTML += `<h2>Because you watched ${continueWatching?.[0]?.name}</h2><div class="movie-list">${g.results.map(movie =>
+                `<div class="movie-card">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title || movie.name}">
+                    <p>${movie.title || movie.name}</p>
+                    <a href="/play/${movie.id}" class="watch-button">Watch Now</a>
+                </div>`).join("")}</div>`
+                byw.className = "movie-section"
+            })
+        }
+
+        async function loadTrendingMovies() {
+            try {
+                const response = await fetch("/api/trending");
+                const data = await response.json();
+                displayMovies("new-movies-list", data.results);
+            } catch (error) {
+                console.error("Failed to load trending movies:", error);
+            }
+        }
+        async function loadTrendingTV() {
+            try {
+                const response = await fetch("/api/trendingtv");
+                const data = await response.json();
+                displayTV("new-tv-list", data.results);
+            } catch (error) {
+                console.error("Failed to load trending tv:", error);
+            }
+        }
+
+        async function loadDiscoverMovies() {
+            try {
+                const response = await fetch("/api/discover");
+                const data = await response.json();
+                displayMovies("discover-list", data.results);
+            } catch (error) {
+                console.error("Failed to load discover movies:", error);
+            }
+        }
+
+        function displayMovies(containerId, movies) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = movies.map(movie =>
+                `<div class="movie-card" onclick="showMovieDetails(${movie.id})">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
+                    <p>${movie.title}</p>
+                    <a href="javascript:void(0);" class="watch-button">View Details</a>
+                </div>`).join("");
+        }
+        function displayTV(containerId, movies) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = movies.map(movie =>
+                `<div class="movie-card" onclick="showTVDetails(${movie.id})">
+                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.name}">
+                    <p>${movie.name}</p>
+                    <a href="javascript:void(0);" class="watch-button">View Details</a>
+                </div>`).join("");
+        }
+
+        async function initializeSlideshow() {
+            try {
+                const response = await fetch("/api/discover");
+                const data = await response.json();
+                displaySlides(data.results);
+            } catch (error) {
+                console.error("Failed to load slideshow:", error);
+            }
+        }
+
+        function displaySlides(movies) {
+            const slideshow = document.getElementById("slideshow");
+            slideshow.innerHTML = movies.map(movie =>
+                `<div class="slide">
+                    <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
+                    <div class="slide-info">
+                        <h3>${movie.title}</h3>
+                        <p>${movie.overview}</p>
+                        <a href="/play/${movie.id}" class="watch-button">Watch</a>
+                    </div>
+                </div>`).join("");
+
+            startSlideshow();
+        }
+
+        function startSlideshow() {
+            const slides = document.querySelectorAll(".slide");
+            let slideIndex = 0;
+
+            setInterval(() => {
+                slides.forEach((slide, index) => {
+                    slide.style.transform = `translateX(-${slideIndex * 100}%)`;
+                });
+                slideIndex = (slideIndex + 1) % slides.length;
+            }, 3000);
+        }
+
+        async function showMovieDetails(movieId) {
+            const modal = document.getElementById("movie-modal");
+            const movieDetailsContainer = document.getElementById("movie-details");
+
+            try {
+                const response = await fetch(`/api/movie/${movieId}`);
+                const movie = await response.json();
+
+                movieDetailsContainer.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
+                    <h2>${movie.title}</h2>
+                    <p><strong>Rating:</strong> ⭐ ${movie.vote_average} / 10</p>
+                    <p>${movie.overview}</p>
+                    <a href="/play/${movie.id}" class="play-button">Watch Now</a>
+                `;
+
+                modal.style.display = "flex";       
+            } catch (error) {
+                console.error("Failed to load movie details:", error);
+            }
+        }
+
+        async function showTVDetails(movieId) {
+            const modal = document.getElementById("movie-modal");
+            const movieDetailsContainer = document.getElementById("movie-details");
+
+            try {
+                const response = await fetch(`/api/tv/${movieId}`);
+                const tv = await response.json();
+
+                movieDetailsContainer.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/original${tv.backdrop_path}" alt="${tv.title}">
+                    <h2>${tv.name}</h2>
+                    <p><strong>Rating:</strong> ⭐ ${tv.vote_average} / 10</p>
+                    <p>${tv.overview}</p>
+                    <a href="/play/${tv.id}?series=1" class="play-button">Watch Now</a>
+                `;
+
+                modal.style.display = "flex";       
+            } catch (error) {
+                console.error("Failed to load movie details:", error);
+            }
+        }
+
+
+        const modal = document.getElementById("movie-modal");
+        const closeModal = document.querySelector(".close");
+
+        closeModal.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+        window.onload = () =>{
+            document.getElementById("submit").onclick = () =>{
+              if(!document.getElementById("search-bar").value) return alert("Please enter a search term")
+              window.location.href = "/search?q=" + document.getElementById("search-bar").value
+          }
+
+          document.addEventListener("keypress", (e) =>{
+              if(e.keyCode === 13){
+                  const searchTerm = document.getElementById("search-bar").value
+                  if(!searchTerm) return alert("Please enter a search term")
+                  window.location.href = "/search?q=" + document.getElementById("search-bar").value
+                  document.getElementById("search-bar").value = ""
+              }
+          })
+        }
+    </script>
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script async type="text/javascript" src="https://s0-greate.net/p/1269519"></script>
     <script async data-cfasync="false">
@@ -285,267 +546,5 @@
         <p>Owned and operated by <a href="https://bhaiaajo.github.io" target="_blank" style="color: #fff; text-decoration: underline;">Bhai Aajo</a>.</p>
         <p><a href="/privacypolicy" style="color: #fff; text-decoration: underline;">Privacy Policy</a>, <a href="/dmca" style="color: #fff; text-decoration: underline;">DMCA</a></p>
     </footer>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            loadContinueWatching();
-            loadTrendingMovies();
-            loadDiscoverMovies();
-            loadTrendingTV()
-            initializeSlideshow();
-            showList("110121", "tv", "TV Show")
-            showList("634", "movie", "Top IMDB")
-            showList("12565", "movie", "Psychological Thriller")
-            showList("3945", "movie", "Sci Fi List by WardenclyffeTower")
-            showList("5729", "movie", "10 By godfather10")
-            //showKeyword("   ")
-        });
-
-        async function showList(id, type, title){
-            const section = document.createElement("section");
-            section.className = "movie-section"
-            const h2 = document.createElement("h2")
-            h2.innerText = title
-            const container = document.createElement("div")
-            container.className = "movie-list"  
-            fetch(`/api/list/${id}`).then(r => r.json(  )).then(got => {
-            if(type === "tv"){
-                container.innerHTML = got.map(movie =>
-                `<div class="movie-card" onclick="showTVDetails(${movie.id})">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.name}">
-                    <p>${movie.name}</p>
-                    <a href="javascript:void(0);" class="watch-button">View Details</a>
-                </div>`).join("");
-            }else{
-                container.innerHTML = got.map(movie =>
-                `<div class="movie-card" onclick="showMovieDetails(${movie.id})">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
-                    <p>${movie.title}</p>
-                    <a href="javascript:void(0);" class="watch-button">View Details</a>
-                </div>`).join("");
-            }
-        }).finally(x =>{
-            section.appendChild(h2)
-            section.appendChild(container)
-            const main = document.getElementsByTagName("main")[0]
-            main.appendChild(section)
-            
-        })
-        }
-        async function showKeyword(id, type, title){
-            const section = document.createElement("section");
-            section.className = "movie-section"
-            const h2 = document.createElement("h2")
-            h2.innerText = title
-            const container = document.createElement("div")
-            container.className = "movie-list"  
-            fetch(`/api/keyword/${id}`).then(r => r.json()).then(got => {
-            if(type === "tv"){
-                container.innerHTML = got.map(movie =>
-                `<div class="movie-card" onclick="showTVDetails(${movie.id})">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.name}">
-                    <p>${movie.name}</p>
-                    <a href="javascript:void(0);" class="watch-button">View Details</a>
-                </div>`).join("");
-            }else{
-                container.innerHTML = got.map(movie =>
-                `<div class="movie-card" onclick="showMovieDetails(${movie.id})">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
-                    <p>${movie.title}</p>
-                    <a href="javascript:void(0);" class="watch-button">View Details</a>
-                </div>`).join("");
-            }
-        }).finally(x =>{
-            section.appendChild(h2)
-            section.appendChild(container)
-            const main = document.getElementsByTagName("main")[0]
-            main.appendChild(section)
-            
-        })
-        }
-
-        async function loadContinueWatching() {
-            const continueWatchingSlider = document.getElementById("continue-watching-slider");
-            const continueWatching = JSON.parse(localStorage.getItem("continue") || "[]").reverse();  
-            if(continueWatching?.length === 0) return;
-            const cw = document.getElementsByClassName("cw")[0]
-            cw.className = "movie-section"
-            continueWatchingSlider.innerHTML = continueWatching.map(movie =>
-                `<div class="movie-card">
-                    <img src="${movie.src}" alt="${movie.name}">
-                    <p>${movie.name}</p>
-                    <a href="${movie.href}" class="watch-button">Continue</a>
-                </div>`).join("");
-                const byw = document.getElementById("byw")
-            fetch(`/api/recommendations/${continueWatching?.[0]?.id}/${continueWatching?.[0]?.type}`).then(g=>g.json()).then(g =>{
-                console.log(g)
-                byw.innerHTML += `<h2>Because you watched ${continueWatching?.[0]?.name}</h2><div class="movie-list">${g.results.map(movie =>
-                `<div class="movie-card">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title || movie.name}">
-                    <p>${movie.title || movie.name}</p>
-                    <a href="/play/${movie.id}" class="watch-button">Watch Now</a>
-                </div>`).join("")}</div>`
-                byw.className = "movie-section"
-            })
-        }
-
-        async function loadTrendingMovies() {
-            try {
-                const response = await fetch("/api/trending");
-                const data = await response.json();
-                displayMovies("new-movies-list", data.results);
-            } catch (error) {
-                console.error("Failed to load trending movies:", error);
-            }
-        }
-        async function loadTrendingTV() {
-            try {
-                const response = await fetch("/api/trendingtv");
-                const data = await response.json();
-                displayTV("new-tv-list", data.results);
-            } catch (error) {
-                console.error("Failed to load trending tv:", error);
-            }
-        }
-
-        async function loadDiscoverMovies() {
-            try {
-                const response = await fetch("/api/discover");
-                const data = await response.json();
-                displayMovies("discover-list", data.results);
-            } catch (error) {
-                console.error("Failed to load discover movies:", error);
-            }
-        }
-
-        function displayMovies(containerId, movies) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = movies.map(movie =>
-                `<div class="movie-card" onclick="showMovieDetails(${movie.id})">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title}">
-                    <p>${movie.title}</p>
-                    <a href="javascript:void(0);" class="watch-button">View Details</a>
-                </div>`).join("");
-        }
-        function displayTV(containerId, movies) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = movies.map(movie =>
-                `<div class="movie-card" onclick="showTVDetails(${movie.id})">
-                    <img src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.name}">
-                    <p>${movie.name}</p>
-                    <a href="javascript:void(0);" class="watch-button">View Details</a>
-                </div>`).join("");
-        }
-
-        async function initializeSlideshow() {
-            try {
-                const response = await fetch("/api/discover");
-                const data = await response.json();
-                displaySlides(data.results);
-            } catch (error) {
-                console.error("Failed to load slideshow:", error);
-            }
-        }
-
-        function displaySlides(movies) {
-            const slideshow = document.getElementById("slideshow");
-            slideshow.innerHTML = movies.map(movie =>
-                `<div class="slide">
-                    <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
-                    <div class="slide-info">
-                        <h3>${movie.title}</h3>
-                        <p>${movie.overview}</p>
-                        <a href="/play/${movie.id}" class="watch-button">Watch</a>
-                    </div>
-                </div>`).join("");
-
-            startSlideshow();
-        }
-
-        function startSlideshow() {
-            const slides = document.querySelectorAll(".slide");
-            let slideIndex = 0;
-
-            setInterval(() => {
-                slides.forEach((slide, index) => {
-                    slide.style.transform = `translateX(-${slideIndex * 100}%)`;
-                });
-                slideIndex = (slideIndex + 1) % slides.length;
-            }, 3000);
-        }
-
-        async function showMovieDetails(movieId) {
-            const modal = document.getElementById("movie-modal");
-            const movieDetailsContainer = document.getElementById("movie-details");
-
-            try {
-                const response = await fetch(`/api/movie/${movieId}`);
-                const movie = await response.json();
-
-                movieDetailsContainer.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" alt="${movie.title}">
-                    <h2>${movie.title}</h2>
-                    <p><strong>Rating:</strong> ⭐ ${movie.vote_average} / 10</p>
-                    <p>${movie.overview}</p>
-                    <a href="/play/${movie.id}" class="play-button">Watch Now</a>
-                `;
-
-                modal.style.display = "flex";       
-            } catch (error) {
-                console.error("Failed to load movie details:", error);
-            }
-        }
-
-        async function showTVDetails(movieId) {
-            const modal = document.getElementById("movie-modal");
-            const movieDetailsContainer = document.getElementById("movie-details");
-
-            try {
-                const response = await fetch(`/api/tv/${movieId}`);
-                const tv = await response.json();
-
-                movieDetailsContainer.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/original${tv.backdrop_path}" alt="${tv.title}">
-                    <h2>${tv.name}</h2>
-                    <p><strong>Rating:</strong> ⭐ ${tv.vote_average} / 10</p>
-                    <p>${tv.overview}</p>
-                    <a href="/play/${tv.id}?series=1" class="play-button">Watch Now</a>
-                `;
-
-                modal.style.display = "flex";       
-            } catch (error) {
-                console.error("Failed to load movie details:", error);
-            }
-        }
-
-
-        const modal = document.getElementById("movie-modal");
-        const closeModal = document.querySelector(".close");
-
-        closeModal.onclick = () => {
-            modal.style.display = "none";
-        };
-
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
-        window.onload = () =>{
-            document.getElementById("submit").onclick = () =>{
-              if(!document.getElementById("search-bar").value) return alert("Please enter a search term")
-              window.location.href = "/search?q=" + document.getElementById("search-bar").value
-          }
-
-          document.addEventListener("keypress", (e) =>{
-              if(e.keyCode === 13){
-                  const searchTerm = document.getElementById("search-bar").value
-                  if(!searchTerm) return alert("Please enter a search term")
-                  window.location.href = "/search?q=" + document.getElementById("search-bar").value
-                  document.getElementById("search-bar").value = ""
-              }
-          })
-        }
-    </script>
 </body>
 </html>
