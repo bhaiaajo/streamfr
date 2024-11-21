@@ -6,6 +6,8 @@ const rateLimit = require("express-rate-limit");
 require("dotenv").config();
 const utils = require("./utils");
 const tmdb = require("./utils");
+const fetch = require("node-fetch")
+const bodyParser = require("body-parser")
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -15,6 +17,7 @@ const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
 app.use(express.json());
 app.use(morgan("combined"));
 app.use("/css", express.static(__dirname + "/css"));
+app.use(bodyParser.json());
 
 // Rate Limiting for API requests
 const apiLimiter = rateLimit({
@@ -41,6 +44,102 @@ function secondsToHms(d) {
 // Route Handlers
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
+});
+
+app.get('/contact', (req,res) => res.sendFile(__dirname + "/public/contact.html"))
+
+async function sendWebhookEmbed(embedContent, color) {
+    const embed = {
+        content: "New Contact or Report Submission", // Optional text message
+        embeds: [
+            {
+                title: embedContent.title,
+                color: color,  // Blue color for the embed
+                fields: [
+                    {
+                        name: "Name",
+                        value: embedContent.name,
+                        inline: true
+                    },
+                    {
+                        name: "Email",
+                        value: embedContent.email,
+                        inline: true
+                    },
+                    {
+                        name: embedContent.fieldName,
+                        value: embedContent.fieldValue,
+                        inline: false
+                    }
+                ],
+                footer: {
+                    text: "StreamFR | Contact / Report",
+                    icon_url: "https://files.softicons.com/download/application-icons/must-have-icons-by-visualpharm/png/256/Help.png" // Example footer icon
+                },
+                timestamp: new Date().toISOString() // Current timestamp
+            }
+        ]
+    };
+
+    try {
+        const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(embed),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to send message');
+        }
+    } catch (error) {
+        console.error('Error sending embed to Discord:', error);
+    }
+}
+
+// Contact form route
+app.post('/contact', async (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Construct the embed content for Contact Us
+    const embedContent = {
+        title: "New Contact Message",
+        name,
+        email,
+        fieldName: "Message",
+        fieldValue: message,
+    };
+
+    try {
+        // Send the embed to Discord webhook for contact
+        await sendWebhookEmbed(embedContent, 3447003);
+        res.status(200).json({ success: true, message: 'Message sent successfully!' });
+    } catch (error) {
+        console.error('Error sending contact message to Discord:', error);
+        res.status(500).json({ success: false, message: 'Failed to send message. Please try again later.' });
+    }
+});
+
+// Report issue form route
+app.post('/report', async (req, res) => {
+    const { name, email, description } = req.body;
+
+    // Construct the embed content for Report Issue
+    const embedContent = {
+        title: "New Issue Reported",
+        name,
+        email,
+        fieldName: "Issue Description",
+        fieldValue: description,
+    };
+
+    try {
+        // Send the embed to Discord webhook for report
+        await sendWebhookEmbed(embedContent, 16711680);
+        res.status(200).json({ success: true, message: 'Report sent successfully!' });
+    } catch (error) {
+        console.error('Error sending report to Discord:', error);
+        res.status(500).json({ success: false, message: 'Failed to send report. Please try again later.' });
+    }
 });
 
 // Discover and Top Rated Movies with Caching
