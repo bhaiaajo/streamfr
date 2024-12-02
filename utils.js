@@ -97,7 +97,7 @@ function generateWatchSources(id,tmdbid, type){
             "vidsrc.nl":`https://player.vidsrc.nl/embed/movie/${tmdbid}`,
             "moviee.tv": `https://moviee.tv/embed/movie/${tmdbid}`,
             "gomo.to": `https://gomo.to/movie/${id}`,
-            "vidbinge.dev":`vidbinge.dev/embed/movie/${tmdbid}`,
+            "vidbinge.dev":`https://vidbinge.dev/embed/movie/${tmdbid}`,
             "vidbinge.com": `https://www.vidbinge.com/media/tmdb-movie-${tmdbid}`,
             "nontongo.win":`https://nontongo.win/embed/movie/${tmdbid}`,
             "multiembed.mov":`https://multiembed.mov/directstream.php/?tmdb=1&video_id=${tmdbid}`,
@@ -107,7 +107,7 @@ function generateWatchSources(id,tmdbid, type){
     }else{
         return {
             "vidsrc.me": `https://vidsrc.xyz/embed/tv/${id}`,
-            "vidbinge.dev": `vidbinge.dev/embed/tv/${tmdbid}`,
+            "vidbinge.dev": `https://vidbinge.dev/embed/tv/${tmdbid}`,
             "moviee.tv": `https://moviee.tv/embed/tv/${tmdbid}`,
             "moviesapi.club": `https://moviesapi.club/tv/${tmdbid}`,
             "2embed.cc": `https://www.2embed.cc/embedtvfull/${id}`,
