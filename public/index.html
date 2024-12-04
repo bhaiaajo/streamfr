@@ -129,6 +129,18 @@
                 </div>`).join("")}</div>`
                 byw.className = "movie-section"
             })
+                    const modal = document.getElementById("movie-modal");
+        const closeModal = document.querySelector(".close");
+
+        closeModal.onclick = () => {
+            modal.style.display = "none";
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
         }
 
         async function loadTrendingMovies() {
@@ -261,18 +273,7 @@
         }
 
 
-        const modal = document.getElementById("movie-modal");
-        const closeModal = document.querySelector(".close");
 
-        closeModal.onclick = () => {
-            modal.style.display = "none";
-        };
-
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        };
     </script>
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2GSJRJYKS0"></script>
     <script async type="text/javascript" src="https://s0-greate.net/p/1269519"></script>
